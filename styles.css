@@ -1,0 +1,182 @@
+.app-shell {
+  box-sizing: border-box;
+  max-width: 760px;
+  margin: 2rem auto;
+  padding: 0 1rem 2rem;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #16213e;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+body {
+  margin: 0;
+  background: #f3f6ff;
+}
+
+.brand-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.brand-header h1 {
+  font-size: 1.4rem;
+  margin: 0.8rem 0 0;
+}
+
+.logo-wrap {
+  width: 84px;
+  height: 84px;
+  margin: 0 auto;
+}
+
+.logo-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(16, 42, 131, 0.12);
+  padding: 1.3rem;
+  margin-bottom: 1rem;
+}
+
+.step {
+  display: none;
+}
+
+.step.active {
+  display: block;
+}
+
+.subtle-text {
+  margin-top: 0;
+  color: #47546d;
+}
+
+.form-grid {
+  display: grid;
+  gap: 0.7rem;
+}
+
+label {
+  font-weight: 600;
+}
+
+input,
+select {
+  width: 100%;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #c2cee6;
+  padding: 0.7rem 0.8rem;
+}
+
+input:focus,
+select:focus {
+  border-color: #2f5bea;
+  outline: 2px solid #d8e3ff;
+}
+
+.btn {
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.75rem 1rem;
+}
+
+.btn-primary {
+  background: #2f5bea;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #2547bb;
+}
+
+.btn-secondary {
+  background: #00a37a;
+  color: #fff;
+}
+
+.btn-outline {
+  background: #fff;
+  border: 1px solid #8ca0cf;
+  color: #1f3568;
+}
+
+.actions {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+
+.hidden {
+  display: none;
+}
+
+.message {
+  min-height: 1.25rem;
+  margin-top: 0.8rem;
+  font-weight: 600;
+}
+
+.message.success {
+  color: #10775b;
+}
+
+.message.error {
+  color: #b31919;
+}
+
+.consent-body {
+  background: #f7f9ff;
+  border-left: 4px solid #2f5bea;
+  padding: 0.9rem;
+  border-radius: 8px;
+}
+
+.consent-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-weight: 500;
+}
+
+.consent-check input {
+  width: auto;
+  margin-top: 0.2rem;
+}
+
+.certificate-preview {
+  border: 2px solid #d1dcf7;
+  border-radius: 12px;
+  background: #fcfdff;
+  padding: 1.2rem;
+}
+
+.certificate-preview h3 {
+  text-align: center;
+  margin-top: 0;
+  color: #102a83;
+}
+
+.certificate-preview p {
+  line-height: 1.5;
+  margin: 0.45rem 0;
+}
+
+@media (max-width: 640px) {
+  .brand-header h1 {
+    font-size: 1.15rem;
+  }
+}

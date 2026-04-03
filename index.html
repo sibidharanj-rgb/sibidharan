@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Voter Pledge Registration</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="brand-header">
+        <div class="logo-wrap" aria-hidden="true">
+          <svg
+            class="logo-svg"
+            viewBox="0 0 120 120"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle cx="60" cy="60" r="56" fill="#102a83" />
+            <path
+              d="M30 62l16 16 44-44"
+              fill="none"
+              stroke="#fff"
+              stroke-width="9"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+        <h1>Election Commission - Voter Pledge Registration</h1>
+      </header>
+
+      <section id="step-auth" class="card step active" aria-live="polite">
+        <h2>Verify Mobile Number</h2>
+        <p class="subtle-text">
+          Enter your mobile number to receive a one-time password (OTP).
+        </p>
+
+        <form id="mobile-form" class="form-grid">
+          <label for="mobile">Mobile Number</label>
+          <input
+            id="mobile"
+            name="mobile"
+            type="tel"
+            placeholder="10-digit mobile number"
+            pattern="[0-9]{10}"
+            maxlength="10"
+            inputmode="numeric"
+            autocomplete="tel"
+            required
+          />
+
+          <button type="submit" class="btn btn-primary">Send OTP</button>
+        </form>
+
+        <form id="otp-form" class="form-grid hidden">
+          <label for="otp">Enter OTP</label>
+          <input
+            id="otp"
+            name="otp"
+            type="text"
+            placeholder="6-digit OTP"
+            pattern="[0-9]{6}"
+            maxlength="6"
+            inputmode="numeric"
+            autocomplete="one-time-code"
+            required
+          />
+          <button type="submit" class="btn btn-primary">Verify OTP</button>
+        </form>
+
+        <p id="auth-message" class="message"></p>
+      </section>
+
+      <section id="step-details" class="card step" aria-live="polite">
+        <h2>Personal Details</h2>
+        <p class="subtle-text">
+          Provide your details to continue with the pledge registration.
+        </p>
+
+        <form id="details-form" class="form-grid">
+          <label for="fullName">Full Name</label>
+          <input
+            id="fullName"
+            name="fullName"
+            type="text"
+            placeholder="Your full name"
+            autocomplete="name"
+            required
+          />
+
+          <label for="email">Email ID</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            placeholder="name@example.com"
+            autocomplete="email"
+            required
+          />
+
+          <label for="region">Region</label>
+          <select id="region" name="region" required>
+            <option value="">Select region</option>
+            <option>North</option>
+            <option>South</option>
+            <option>East</option>
+            <option>West</option>
+            <option>Central</option>
+            <option>North-East</option>
+          </select>
+
+          <label for="city">City</label>
+          <input
+            id="city"
+            name="city"
+            type="text"
+            placeholder="Your city"
+            autocomplete="address-level2"
+            required
+          />
+
+          <button type="submit" class="btn btn-primary">
+            Continue to Consent
+          </button>
+        </form>
+      </section>
+
+      <section id="step-consent" class="card step" aria-live="polite">
+        <h2>Voter Consent Form</h2>
+        <p class="consent-body">
+          I solemnly pledge that I will vote responsibly, uphold democratic
+          values, and encourage informed participation in elections.
+        </p>
+
+        <form id="consent-form" class="form-grid">
+          <label class="consent-check">
+            <input id="consent" name="consent" type="checkbox" required />
+            I acknowledge and accept this voter pledge.
+          </label>
+
+          <button type="submit" class="btn btn-primary">
+            Submit &amp; View Certificate
+          </button>
+        </form>
+      </section>
+
+      <section id="step-certificate" class="card step" aria-live="polite">
+        <h2>Certificate of Appreciation</h2>
+        <p class="subtle-text">
+          Preview your certificate below and download it for your records.
+        </p>
+
+        <div id="certificate-preview" class="certificate-preview"></div>
+
+        <div class="actions">
+          <button id="download-certificate" class="btn btn-secondary">
+            Download Certificate
+          </button>
+          <button id="restart-flow" class="btn btn-outline">
+            Register Another Voter
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
