@@ -28,6 +28,25 @@ body {
   margin: 0.8rem 0 0;
 }
 
+.flow-link-wrap {
+  margin: 0.7rem 0 0;
+}
+
+.flow-link {
+  display: inline-block;
+  text-decoration: none;
+  color: #1f3568;
+  font-weight: 600;
+  border: 1px solid #8ca0cf;
+  background: #fff;
+  border-radius: 999px;
+  padding: 0.35rem 0.8rem;
+}
+
+.flow-link:hover {
+  background: #f0f4ff;
+}
+
 .logo-wrap {
   width: 84px;
   height: 84px;
