@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI-Native RBAC Wireframes</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --frame: #ffffff;
+      --line: #d8deea;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --accent: #2563eb;
+      --accent-soft: #e8f0ff;
+      --success: #15803d;
+      --danger: #b91c1c;
+      --warning: #b45309;
+      --radius: 14px;
+      --shadow: 0 8px 30px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    .page-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(246, 247, 251, 0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--line);
+      padding: 14px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .title-wrap h1 {
+      margin: 0;
+      font-size: 1.05rem;
+    }
+
+    .title-wrap p {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .flow-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .flow-nav button {
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 7px 12px;
+      border-radius: 999px;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 0.85rem;
+    }
+
+    .flow-nav button:hover,
+    .flow-nav button.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 24px auto 42px;
+      padding: 0 20px 60px;
+      display: grid;
+      gap: 26px;
+    }
+
+    .frame {
+      background: var(--frame);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      scroll-margin-top: 90px;
+    }
+
+    .frame-title {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .frame-subtitle {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      border: 1px dashed var(--line);
+      padding: 4px 10px;
+      color: var(--muted);
+      font-size: 0.8rem;
+      margin-bottom: 10px;
+    }
+
+    .topbar {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fafbff;
+      padding: 10px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 14px;
+    }
+
+    .avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #dbeafe;
+      color: #1d4ed8;
+      font-weight: 700;
+      font-size: 0.8rem;
+      border: 1px solid #bfdbfe;
+    }
+
+    .layout-two {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 12px;
+    }
+
+    .sidebar {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      background: #fcfdff;
+    }
+
+    .sidebar ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .sidebar li {
+      border-radius: 8px;
+      padding: 8px 10px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      border: 1px solid transparent;
+    }
+
+    .sidebar li.active {
+      color: var(--accent);
+      background: var(--accent-soft);
+      border-color: #c9dcff;
+      font-weight: 600;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px;
+      background: #fff;
+    }
+
+    textarea,
+    select,
+    input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font: inherit;
+      background: #fff;
+      color: var(--text);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 110px;
+    }
+
+    .btn-row {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      border-radius: 10px;
+      padding: 8px 12px;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    button.primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: #1d4ed8;
+    }
+
+    button.ghost {
+      background: #f8faff;
+      color: var(--accent);
+      border-color: #c9dcff;
+    }
+
+    .split {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 12px;
+    }
+
+    .stack {
+      display: grid;
+      gap: 10px;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+      background: #fff;
+    }
+
+    .card h4 {
+      margin: 0 0 8px;
+      font-size: 0.95rem;
+    }
+
+    .kv {
+      display: grid;
+      grid-template-columns: 115px 1fr;
+      gap: 8px 10px;
+      font-size: 0.9rem;
+    }
+
+    .kv .k {
+      color: var(--muted);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 0.9rem;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 9px 10px;
+      border-bottom: 1px solid #edf0f6;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f9fafc;
+      color: #334155;
+      font-weight: 600;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .table-layout {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: 1.7fr 0.8fr;
+      gap: 12px;
+    }
+
+    .drawer {
+      border: 1px dashed var(--line);
+      border-radius: 10px;
+      padding: 12px;
+      background: #fcfdff;
+    }
+
+    .drawer h4 {
+      margin: 0 0 8px;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 8px;
+    }
+
+    .toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .rule-block {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+      background: #fff;
+      margin-top: 10px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .rule-line {
+      display: grid;
+      grid-template-columns: 38px 1fr 120px 1fr;
+      gap: 8px;
+      align-items: center;
+      font-size: 0.9rem;
+    }
+
+    .mode-switch {
+      display: inline-flex;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .mode-switch button {
+      border: 0;
+      border-right: 1px solid var(--line);
+      border-radius: 0;
+      background: #fff;
+      color: var(--muted);
+      padding: 8px 12px;
+    }
+
+    .mode-switch button:last-child {
+      border-right: 0;
+    }
+
+    .mode-switch button.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .sim-grid {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .result {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+      background: #fff;
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+
+    .status {
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .status.allowed { color: var(--success); }
+    .status.denied { color: var(--danger); }
+
+    .metrics {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(160px, 1fr));
+      gap: 10px;
+    }
+
+    .metric {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+      background: #fff;
+    }
+
+    .metric .name {
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .metric .value {
+      margin-top: 6px;
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .alert {
+      margin-top: 10px;
+      border: 1px solid #fcd9b6;
+      border-left: 4px solid var(--warning);
+      border-radius: 10px;
+      padding: 12px;
+      background: #fffaf3;
+    }
+
+    .severity {
+      display: inline-flex;
+      background: #fef3c7;
+      color: #92400e;
+      border: 1px solid #fcd34d;
+      border-radius: 999px;
+      padding: 2px 9px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .reco-grid {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(230px, 1fr));
+      gap: 10px;
+    }
+
+    .principles, .figma {
+      margin-top: 12px;
+      border: 1px dashed var(--line);
+      border-radius: 10px;
+      padding: 12px;
+      background: #fcfdff;
+    }
+
+    .principles ul,
+    .figma ul {
+      margin: 8px 0 0;
+      padding-left: 18px;
+    }
+
+    @media (max-width: 980px) {
+      .layout-two,
+      .split,
+      .table-layout,
+      .sim-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .rule-line {
+        grid-template-columns: 1fr;
+      }
+
+      .metrics,
+      .reco-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <div class="title-wrap">
+      <h1>RBAC Page - Figma Style Wireframes</h1>
+      <p>Conversational-first access control flow (interactive prototype)</p>
+    </div>
+    <nav class="flow-nav" aria-label="Jump between frames">
+      <button data-target="access-home" class="active">1. Access Home</button>
+      <button data-target="ai-suggestions">2. AI Suggestions</button>
+      <button data-target="permission-builder">3. Permission Builder</button>
+      <button data-target="rule-builder">4. Rule Builder</button>
+      <button data-target="simulation">5. Simulation</button>
+      <button data-target="governance">6. Governance</button>
+      <button data-target="recommendations">7. Recommendations</button>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="frame" id="access-home">
+      <span class="pill">Frame: Access Control Home</span>
+      <div class="topbar">
+        <strong>Acme Data Platform</strong>
+        <span class="muted">Environment: Production</span>
+        <span class="avatar" aria-label="User avatar">JS</span>
+      </div>
+      <div class="layout-two">
+        <aside class="sidebar">
+          <ul>
+            <li>Dashboard</li>
+            <li>Data</li>
+            <li>Workflows</li>
+            <li class="active">⚡ Access Control</li>
+          </ul>
+        </aside>
+        <div class="panel">
+          <h2 class="frame-title">Define Access Control</h2>
+          <p class="frame-subtitle">Describe who should access what</p>
+          <label for="prompt" class="muted">Input Box (chat style)</label>
+          <textarea id="prompt" placeholder="e.g., Sales reps can only see their own leads">Sales reps can only see their own leads and managers can approve discounts.</textarea>
+          <div class="btn-row">
+            <button id="generateBtn" class="primary">Generate Access Rules</button>
+            <button class="ghost" data-target="permission-builder">View Existing Roles</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="frame" id="ai-suggestions">
+      <span class="pill">Frame: AI Suggestions</span>
+      <h2 class="frame-title">AI Interpretation</h2>
+      <p class="frame-subtitle">Split-screen review of input and generated RBAC rules</p>
+      <div class="split">
+        <div class="panel">
+          <h3 class="frame-title">Left Panel: Input</h3>
+          <p class="frame-subtitle">User prompt (editable)</p>
+          <textarea id="inputMirror"></textarea>
+        </div>
+        <div class="stack">
+          <div class="panel">
+            <h3 class="frame-title">Right Panel: AI Output</h3>
+            <p class="muted"><strong>Roles Detected:</strong> Sales Rep, Manager</p>
+          </div>
+          <div class="card">
+            <h4>Permission Card 1</h4>
+            <div class="kv">
+              <div class="k">Role</div><div>Sales Rep</div>
+              <div class="k">Action</div><div>View Leads</div>
+              <div class="k">Scope</div><div>Own</div>
+              <div class="k">Confidence</div><div>92%</div>
+            </div>
+            <div class="btn-row">
+              <button>Edit</button>
+              <button>Why?</button>
+            </div>
+          </div>
+          <div class="card">
+            <h4>Permission Card 2</h4>
+            <div class="kv">
+              <div class="k">Role</div><div>Manager</div>
+              <div class="k">Action</div><div>Approve Discounts</div>
+              <div class="k">Scope</div><div>All</div>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button id="approveContinueBtn" class="primary">Approve &amp; Continue</button>
+            <button>Refine Prompt</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="frame" id="permission-builder">
+      <span class="pill">Frame: Edit Permissions</span>
+      <h2 class="frame-title">Visual Permission Builder</h2>
+      <p class="frame-subtitle">Editable table + right drawer for quick updates</p>
+
+      <div class="btn-row">
+        <button class="primary">+ Add Permission</button>
+        <select aria-label="Filter by role">
+          <option>Filter Role: All</option>
+          <option>Sales Rep</option>
+          <option>Manager</option>
+        </select>
+        <select aria-label="Filter by resource">
+          <option>Filter Resource: All</option>
+          <option>Leads</option>
+          <option>Discounts</option>
+        </select>
+      </div>
+
+      <div class="table-layout">
+        <div>
+          <table>
+            <thead>
+              <tr>
+                <th>Role</th>
+                <th>Resource</th>
+                <th>Action</th>
+                <th>Scope</th>
+                <th>Conditions</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Sales Rep</td>
+                <td>Leads</td>
+                <td>View</td>
+                <td>Own</td>
+                <td>-</td>
+                <td>Edit / Delete</td>
+              </tr>
+              <tr>
+                <td>Manager</td>
+                <td>Leads</td>
+                <td>View</td>
+                <td>All</td>
+                <td>-</td>
+                <td>Edit / Delete</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <aside class="drawer">
+          <h4>Right Drawer (on Edit)</h4>
+          <div class="form-grid">
+            <label class="muted">Resource</label>
+            <select><option>Leads</option></select>
+            <label class="muted">Action</label>
+            <select><option>View</option></select>
+            <label class="muted">Scope</label>
+            <select><option>Own</option><option>All</option></select>
+            <label class="toggle"><input type="checkbox" checked /> Restrict to own data</label>
+          </div>
+        </aside>
+      </div>
+      <div class="btn-row">
+        <button id="toConditionsBtn" class="primary">Add Conditions</button>
+      </div>
+    </section>
+
+    <section class="frame" id="rule-builder">
+      <span class="pill">Frame: Add Conditions</span>
+      <h2 class="frame-title">Context-Aware Rule Builder</h2>
+      <p class="frame-subtitle">Switch between visual blocks and natural language mode</p>
+      <div class="btn-row">
+        <div class="mode-switch" role="tablist" aria-label="Rule builder mode">
+          <button id="visualModeBtn" class="active">Visual</button>
+          <button id="naturalModeBtn">Natural Language</button>
+        </div>
+      </div>
+
+      <div id="visualRule" class="rule-block">
+        <div><strong>IF</strong></div>
+        <div class="rule-line">
+          <select><option>refund_amount</option></select>
+          <select><option>&gt;</option></select>
+          <input value="5000" />
+          <span class="muted">(Value)</span>
+        </div>
+        <div><strong>AND</strong></div>
+        <div class="rule-line">
+          <select><option>customer_tier</option></select>
+          <select><option>!=</option></select>
+          <input value="premium" />
+          <span class="muted">(Value)</span>
+        </div>
+        <div><strong>THEN</strong></div>
+        <select><option>Require Approval</option></select>
+      </div>
+
+      <div id="naturalRule" class="rule-block" style="display: none;">
+        <label class="muted">Natural language view</label>
+        <textarea>Require approval if refund exceeds 5000 and customer is not premium.</textarea>
+      </div>
+      <div class="btn-row">
+        <button id="toSimulationBtn" class="primary">Test via Simulation</button>
+      </div>
+    </section>
+
+    <section class="frame" id="simulation">
+      <span class="pill">Frame: Test Access</span>
+      <h2 class="frame-title">Access Simulation Screen</h2>
+      <div class="sim-grid">
+        <div class="panel">
+          <h3 class="frame-title">Inputs Panel</h3>
+          <div class="form-grid">
+            <label class="muted">Role</label>
+            <select id="simRole">
+              <option>Sales Rep</option>
+              <option>Manager</option>
+            </select>
+            <label class="muted">Action</label>
+            <select id="simAction">
+              <option>View Leads</option>
+              <option>Approve Discounts</option>
+            </select>
+            <label class="muted">Resource</label>
+            <select id="simResource">
+              <option>Leads</option>
+              <option>Discounts</option>
+            </select>
+            <label class="muted">Record Selector</label>
+            <select id="simRecord">
+              <option>Record owned by Sales Rep</option>
+              <option>Record owned by another user</option>
+            </select>
+          </div>
+          <div class="btn-row">
+            <button id="runSimBtn" class="primary">Run Simulation</button>
+          </div>
+        </div>
+        <div class="result">
+          <h3 class="frame-title">Result Panel</h3>
+          <div id="simStatus" class="status denied">❌ Denied</div>
+          <div id="simExplanation" class="card">Denied because Sales Rep can only access own records.</div>
+          <div class="btn-row">
+            <button data-target="permission-builder">Modify Rule</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="frame" id="governance">
+      <span class="pill">Frame: Security Insights</span>
+      <h2 class="frame-title">AI Governance Dashboard</h2>
+      <div class="metrics">
+        <article class="metric">
+          <div class="name">Total Roles</div>
+          <div class="value">8</div>
+        </article>
+        <article class="metric">
+          <div class="name">Active Users</div>
+          <div class="value">241</div>
+        </article>
+        <article class="metric">
+          <div class="name">Risk Alerts</div>
+          <div class="value">3</div>
+        </article>
+      </div>
+      <article class="alert">
+        <span class="severity">HIGH</span>
+        <p><strong>User:</strong> John</p>
+        <p><strong>Activity:</strong> Accessed 500 records in 2 mins</p>
+        <p><strong>Normal:</strong> ~20/day</p>
+        <div class="btn-row">
+          <button class="ghost">Restrict Access</button>
+          <button>Investigate</button>
+        </div>
+      </article>
+    </section>
+
+    <section class="frame" id="recommendations">
+      <span class="pill">Frame: Suggestions</span>
+      <h2 class="frame-title">AI Recommendations Panel</h2>
+      <div class="reco-grid">
+        <article class="card">
+          <h4>Managers have unused permissions</h4>
+          <button>Review</button>
+        </article>
+        <article class="card">
+          <h4>Consider adding approval for high-value discounts</h4>
+          <button class="ghost">Apply</button>
+        </article>
+      </div>
+
+      <section class="principles">
+        <strong>Design Principles</strong>
+        <ul>
+          <li>Conversational first</li>
+          <li>Editable always</li>
+          <li>Explainability everywhere</li>
+          <li>Simulation before deployment</li>
+          <li>AI suggests, user controls</li>
+        </ul>
+      </section>
+
+      <section class="figma">
+        <strong>Figma Layer Structure</strong>
+        <ul>
+          <li>Page: RBAC</li>
+          <li>Frame: Access Home</li>
+          <li>Frame: AI Suggestions</li>
+          <li>Frame: Permission Builder</li>
+          <li>Frame: Rule Builder</li>
+          <li>Frame: Simulation</li>
+          <li>Frame: Governance Dashboard</li>
+          <li>Frame: Recommendations</li>
+          <li>Components: Input Box, Role Card, Permission Table Row, Condition Block, Alert Card</li>
+        </ul>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const navButtons = document.querySelectorAll(".flow-nav button");
+    const targetButtons = document.querySelectorAll("button[data-target]");
+
+    function goToFrame(id) {
+      const section = document.getElementById(id);
+      if (!section) return;
+      section.scrollIntoView({ behavior: "smooth", block: "start" });
+      navButtons.forEach((button) => {
+        button.classList.toggle("active", button.dataset.target === id);
+      });
+    }
+
+    navButtons.forEach((button) => {
+      button.addEventListener("click", () => goToFrame(button.dataset.target));
+    });
+
+    targetButtons.forEach((button) => {
+      button.addEventListener("click", () => goToFrame(button.dataset.target));
+    });
+
+    const promptInput = document.getElementById("prompt");
+    const inputMirror = document.getElementById("inputMirror");
+    const generateBtn = document.getElementById("generateBtn");
+    const approveContinueBtn = document.getElementById("approveContinueBtn");
+    const toConditionsBtn = document.getElementById("toConditionsBtn");
+    const toSimulationBtn = document.getElementById("toSimulationBtn");
+
+    generateBtn.addEventListener("click", () => {
+      inputMirror.value = promptInput.value.trim() || promptInput.placeholder;
+      goToFrame("ai-suggestions");
+    });
+
+    approveContinueBtn.addEventListener("click", () => goToFrame("permission-builder"));
+    toConditionsBtn.addEventListener("click", () => goToFrame("rule-builder"));
+    toSimulationBtn.addEventListener("click", () => goToFrame("simulation"));
+
+    const visualModeBtn = document.getElementById("visualModeBtn");
+    const naturalModeBtn = document.getElementById("naturalModeBtn");
+    const visualRule = document.getElementById("visualRule");
+    const naturalRule = document.getElementById("naturalRule");
+
+    visualModeBtn.addEventListener("click", () => {
+      visualModeBtn.classList.add("active");
+      naturalModeBtn.classList.remove("active");
+      visualRule.style.display = "grid";
+      naturalRule.style.display = "none";
+    });
+
+    naturalModeBtn.addEventListener("click", () => {
+      naturalModeBtn.classList.add("active");
+      visualModeBtn.classList.remove("active");
+      visualRule.style.display = "none";
+      naturalRule.style.display = "grid";
+    });
+
+    const runSimBtn = document.getElementById("runSimBtn");
+    const simRole = document.getElementById("simRole");
+    const simAction = document.getElementById("simAction");
+    const simRecord = document.getElementById("simRecord");
+    const simStatus = document.getElementById("simStatus");
+    const simExplanation = document.getElementById("simExplanation");
+
+    runSimBtn.addEventListener("click", () => {
+      const role = simRole.value;
+      const action = simAction.value;
+      const record = simRecord.value;
+
+      const isDenied =
+        role === "Sales Rep" &&
+        action === "View Leads" &&
+        record === "Record owned by another user";
+
+      if (isDenied) {
+        simStatus.textContent = "❌ Denied";
+        simStatus.classList.add("denied");
+        simStatus.classList.remove("allowed");
+        simExplanation.textContent = "Denied because Sales Rep can only access own records.";
+      } else {
+        simStatus.textContent = "✅ Allowed";
+        simStatus.classList.add("allowed");
+        simStatus.classList.remove("denied");
+        simExplanation.textContent = "Allowed based on current role, scope, and condition rules.";
+      }
+    });
+  </script>
+</body>
+</html>
