@@ -3,21 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI-Native RBAC Wireframes</title>
+  <title>Zoho Creator RBAC + ABAC Revamp Flow</title>
   <style>
     :root {
-      --bg: #f6f7fb;
-      --frame: #ffffff;
-      --line: #d8deea;
+      --bg: #f5f6fb;
+      --surface: #ffffff;
+      --line: #dfe3ef;
       --text: #1f2937;
       --muted: #6b7280;
-      --accent: #2563eb;
-      --accent-soft: #e8f0ff;
-      --success: #15803d;
+      --primary: #2f56ee;
+      --primary-soft: #edf2ff;
+      --success: #157f4a;
       --danger: #b91c1c;
       --warning: #b45309;
-      --radius: 14px;
-      --shadow: 0 8px 30px rgba(15, 23, 42, 0.08);
+      --topbar: #252a57;
+      --radius: 10px;
+      --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
     }
 
     * {
@@ -26,192 +27,200 @@
 
     body {
       margin: 0;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-      color: var(--text);
       background: var(--bg);
-    }
-
-    .page-header {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background: rgba(246, 247, 251, 0.95);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid var(--line);
-      padding: 14px 24px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .title-wrap h1 {
-      margin: 0;
-      font-size: 1.05rem;
-    }
-
-    .title-wrap p {
-      margin: 2px 0 0;
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
-    .flow-nav {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .flow-nav button {
-      border: 1px solid var(--line);
-      background: #fff;
-      padding: 7px 12px;
-      border-radius: 999px;
-      color: var(--muted);
-      cursor: pointer;
-      transition: all 0.2s ease;
-      font-size: 0.85rem;
-    }
-
-    .flow-nav button:hover,
-    .flow-nav button.active {
-      border-color: var(--accent);
-      color: var(--accent);
-      background: var(--accent-soft);
-    }
-
-    .container {
-      max-width: 1280px;
-      margin: 24px auto 42px;
-      padding: 0 20px 60px;
-      display: grid;
-      gap: 26px;
-    }
-
-    .frame {
-      background: var(--frame);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 16px;
-      scroll-margin-top: 90px;
-    }
-
-    .frame-title {
-      margin: 0;
-      font-size: 1rem;
-      font-weight: 700;
-    }
-
-    .frame-subtitle {
-      margin: 4px 0 0;
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
-    .muted {
-      color: var(--muted);
-    }
-
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      border-radius: 999px;
-      border: 1px dashed var(--line);
-      padding: 4px 10px;
-      color: var(--muted);
-      font-size: 0.8rem;
-      margin-bottom: 10px;
+      color: var(--text);
+      font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
     }
 
     .topbar {
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      background: #fafbff;
-      padding: 10px 12px;
+      height: 54px;
+      background: var(--topbar);
+      color: #fff;
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      align-items: center;
-      margin-top: 14px;
+      padding: 0 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      position: sticky;
+      top: 0;
+      z-index: 20;
     }
 
-    .avatar {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      display: inline-flex;
+    .topbar .left,
+    .topbar .right {
+      display: flex;
       align-items: center;
-      justify-content: center;
-      background: #dbeafe;
-      color: #1d4ed8;
-      font-weight: 700;
-      font-size: 0.8rem;
-      border: 1px solid #bfdbfe;
+      gap: 14px;
+      font-size: 0.85rem;
     }
 
-    .layout-two {
-      margin-top: 12px;
+    .app-chip {
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.09);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .shell {
       display: grid;
-      grid-template-columns: 220px 1fr;
-      gap: 12px;
+      grid-template-columns: 230px 1fr;
+      min-height: calc(100vh - 54px);
     }
 
     .sidebar {
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 10px;
-      background: #fcfdff;
+      border-right: 1px solid var(--line);
+      background: #f1f3fb;
+      padding: 14px 12px;
     }
 
-    .sidebar ul {
-      margin: 0;
-      padding: 0;
-      list-style: none;
+    .side-group {
+      margin-bottom: 18px;
     }
 
-    .sidebar li {
-      border-radius: 8px;
+    .side-label {
+      color: #606b82;
+      font-size: 0.72rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .side-item {
       padding: 8px 10px;
-      color: var(--muted);
-      margin-bottom: 6px;
-      border: 1px solid transparent;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      color: #334155;
+      margin-bottom: 4px;
     }
 
-    .sidebar li.active {
-      color: var(--accent);
-      background: var(--accent-soft);
-      border-color: #c9dcff;
+    .side-item.active {
+      background: #e8eeff;
+      color: var(--primary);
       font-weight: 600;
     }
 
-    .panel {
+    .content {
+      padding: 18px;
+      overflow: auto;
+    }
+
+    .page-card {
+      background: var(--surface);
       border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 14px;
-      background: #fff;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      padding: 16px;
     }
 
-    textarea,
-    select,
-    input {
-      width: 100%;
+    h1 {
+      margin: 0;
+      font-size: 1.25rem;
+    }
+
+    .subtitle {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .flow-stepper {
+      margin-top: 14px;
+      padding: 12px;
+      border: 1px dashed #cfd8f8;
+      background: #f8faff;
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .flow-step {
+      background: #fff;
+      border: 1px solid #d7defa;
+      border-radius: 999px;
+      padding: 5px 9px;
+      color: #2f56ee;
+      font-weight: 600;
+    }
+
+    .tabs {
+      margin-top: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 10px;
+    }
+
+    .tab-btn {
       border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 10px 12px;
-      font: inherit;
       background: #fff;
-      color: var(--text);
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 7px 12px;
+      cursor: pointer;
+      font-size: 0.85rem;
     }
 
-    textarea {
-      resize: vertical;
-      min-height: 110px;
+    .tab-btn.active {
+      color: var(--primary);
+      border-color: #c8d5ff;
+      background: var(--primary-soft);
+      font-weight: 600;
     }
 
-    .btn-row {
-      margin-top: 12px;
+    .tab-panel {
+      display: none;
+      margin-top: 14px;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    .row {
+      display: grid;
+      gap: 12px;
+    }
+
+    .row.two {
+      grid-template-columns: 1.2fr 0.9fr;
+    }
+
+    .row.three {
+      grid-template-columns: repeat(3, minmax(160px, 1fr));
+    }
+
+    .block {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      padding: 12px;
+    }
+
+    .block h3 {
+      margin: 0;
+      font-size: 0.95rem;
+    }
+
+    .block-note {
+      margin: 4px 0 10px;
+      font-size: 0.84rem;
+      color: var(--muted);
+    }
+
+    .top-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .left-actions,
+    .right-actions {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
@@ -221,80 +230,70 @@
       border: 1px solid var(--line);
       background: #fff;
       color: var(--text);
-      border-radius: 10px;
-      padding: 8px 12px;
-      font: inherit;
+      border-radius: 8px;
+      padding: 8px 11px;
+      font-size: 0.84rem;
       cursor: pointer;
     }
 
-    button.primary {
-      background: var(--accent);
+    .primary {
+      background: var(--primary);
+      border-color: #2649d0;
       color: #fff;
-      border-color: #1d4ed8;
     }
 
-    button.ghost {
-      background: #f8faff;
-      color: var(--accent);
-      border-color: #c9dcff;
+    .ghost {
+      background: var(--primary-soft);
+      border-color: #c8d5ff;
+      color: #274fdf;
     }
 
-    .split {
-      margin-top: 12px;
-      display: grid;
-      grid-template-columns: 1fr 1.2fr;
-      gap: 12px;
-    }
-
-    .stack {
-      display: grid;
-      gap: 10px;
-    }
-
-    .card {
+    textarea,
+    input,
+    select {
+      width: 100%;
       border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 12px;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font: inherit;
       background: #fff;
+      color: var(--text);
     }
 
-    .card h4 {
-      margin: 0 0 8px;
-      font-size: 0.95rem;
+    textarea {
+      resize: vertical;
+      min-height: 86px;
     }
 
-    .kv {
-      display: grid;
-      grid-template-columns: 115px 1fr;
-      gap: 8px 10px;
-      font-size: 0.9rem;
-    }
-
-    .kv .k {
-      color: var(--muted);
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.82rem;
+      color: #475569;
+      font-weight: 600;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
-      font-size: 0.9rem;
-      background: #fff;
       border: 1px solid var(--line);
-      border-radius: 10px;
+      border-radius: 8px;
       overflow: hidden;
+      font-size: 0.84rem;
+      background: #fff;
     }
 
-    th, td {
+    th,
+    td {
+      border-bottom: 1px solid #edf1f8;
       text-align: left;
-      padding: 9px 10px;
-      border-bottom: 1px solid #edf0f6;
+      padding: 8px;
       vertical-align: top;
     }
 
     th {
-      background: #f9fafc;
-      color: #334155;
+      background: #f6f8fd;
+      color: #516177;
       font-weight: 600;
     }
 
@@ -302,591 +301,722 @@
       border-bottom: 0;
     }
 
-    .table-layout {
-      margin-top: 10px;
-      display: grid;
-      grid-template-columns: 1.7fr 0.8fr;
-      gap: 12px;
-    }
-
-    .drawer {
-      border: 1px dashed var(--line);
-      border-radius: 10px;
-      padding: 12px;
-      background: #fcfdff;
-    }
-
-    .drawer h4 {
-      margin: 0 0 8px;
-    }
-
-    .form-grid {
-      display: grid;
-      gap: 8px;
-    }
-
-    .toggle {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.9rem;
-      color: var(--muted);
-      margin-top: 4px;
-    }
-
-    .rule-block {
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 12px;
-      background: #fff;
-      margin-top: 10px;
-      display: grid;
-      gap: 10px;
-    }
-
-    .rule-line {
-      display: grid;
-      grid-template-columns: 38px 1fr 120px 1fr;
-      gap: 8px;
-      align-items: center;
-      font-size: 0.9rem;
-    }
-
-    .mode-switch {
-      display: inline-flex;
-      border: 1px solid var(--line);
+    .pill {
+      display: inline-block;
+      border: 1px solid #cfd9ff;
+      background: #eef2ff;
+      color: #324fcf;
       border-radius: 999px;
-      overflow: hidden;
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      margin-right: 6px;
+      margin-bottom: 4px;
     }
 
-    .mode-switch button {
-      border: 0;
-      border-right: 1px solid var(--line);
-      border-radius: 0;
+    .tree {
+      list-style: none;
+      margin: 0;
+      padding-left: 0;
+      font-size: 0.9rem;
+    }
+
+    .tree li {
+      margin: 6px 0;
+      padding-left: 18px;
+      position: relative;
+    }
+
+    .tree li::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border: 1px solid #c7d2f5;
       background: #fff;
-      color: var(--muted);
-      padding: 8px 12px;
+      position: absolute;
+      left: 0;
+      top: 6px;
     }
 
-    .mode-switch button:last-child {
-      border-right: 0;
+    .nested {
+      margin-left: 20px;
     }
 
-    .mode-switch button.active {
-      background: var(--accent-soft);
-      color: var(--accent);
-      font-weight: 600;
-    }
-
-    .sim-grid {
-      margin-top: 10px;
+    .condition-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      grid-template-columns: 1fr 120px 1fr;
+      gap: 8px;
+      margin-bottom: 8px;
     }
 
-    .result {
+    .condition-row {
+      border: 1px solid #e5e9f7;
+      border-radius: 8px;
+      background: #fbfcff;
+      padding: 8px;
+      margin-bottom: 8px;
+    }
+
+    .decision {
       border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 12px;
+      border-left: 4px solid #94a3b8;
+      border-radius: 8px;
+      padding: 10px;
       background: #fff;
-      display: grid;
-      gap: 10px;
-      align-content: start;
+    }
+
+    .decision.allowed {
+      border-left-color: var(--success);
+    }
+
+    .decision.denied {
+      border-left-color: var(--danger);
     }
 
     .status {
-      font-size: 1.15rem;
       font-weight: 700;
+      margin-bottom: 6px;
     }
 
-    .status.allowed { color: var(--success); }
-    .status.denied { color: var(--danger); }
+    .status.allowed {
+      color: var(--success);
+    }
 
-    .metrics {
-      margin-top: 10px;
-      display: grid;
-      grid-template-columns: repeat(3, minmax(160px, 1fr));
-      gap: 10px;
+    .status.denied {
+      color: var(--danger);
+    }
+
+    .trace {
+      margin: 8px 0 0;
+      padding-left: 18px;
+      font-size: 0.84rem;
+      color: #334155;
     }
 
     .metric {
       border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 12px;
+      border-radius: 8px;
+      padding: 10px;
       background: #fff;
     }
 
     .metric .name {
       color: var(--muted);
-      font-size: 0.86rem;
+      font-size: 0.8rem;
     }
 
     .metric .value {
       margin-top: 6px;
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       font-weight: 700;
     }
 
     .alert {
-      margin-top: 10px;
-      border: 1px solid #fcd9b6;
+      border: 1px solid #f8d6af;
       border-left: 4px solid var(--warning);
-      border-radius: 10px;
-      padding: 12px;
-      background: #fffaf3;
-    }
-
-    .severity {
-      display: inline-flex;
-      background: #fef3c7;
-      color: #92400e;
-      border: 1px solid #fcd34d;
-      border-radius: 999px;
-      padding: 2px 9px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .reco-grid {
+      border-radius: 8px;
+      background: #fffaf2;
+      padding: 10px;
       margin-top: 10px;
-      display: grid;
-      grid-template-columns: repeat(2, minmax(230px, 1fr));
-      gap: 10px;
+      font-size: 0.84rem;
     }
 
-    .principles, .figma {
-      margin-top: 12px;
-      border: 1px dashed var(--line);
+    .blueprint {
+      margin-top: 14px;
+      border: 1px dashed #c7d2fe;
       border-radius: 10px;
+      background: #f8faff;
       padding: 12px;
-      background: #fcfdff;
     }
 
-    .principles ul,
-    .figma ul {
+    .blueprint h3 {
+      margin: 0 0 8px;
+      font-size: 0.95rem;
+    }
+
+    .blueprint ul {
       margin: 8px 0 0;
       padding-left: 18px;
+      color: #344255;
+      font-size: 0.86rem;
     }
 
-    @media (max-width: 980px) {
-      .layout-two,
-      .split,
-      .table-layout,
-      .sim-grid {
+    @media (max-width: 1080px) {
+      .shell {
         grid-template-columns: 1fr;
       }
 
-      .rule-line {
+      .sidebar {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .row.two,
+      .row.three {
         grid-template-columns: 1fr;
       }
 
-      .metrics,
-      .reco-grid {
+      .condition-grid {
         grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
 <body>
-  <header class="page-header">
-    <div class="title-wrap">
-      <h1>RBAC Page - Figma Style Wireframes</h1>
-      <p>Conversational-first access control flow (interactive prototype)</p>
+  <header class="topbar">
+    <div class="left">
+      <span>Menu</span>
+      <span class="app-chip">Tamilnadu Election com...</span>
+      <span>Settings</span>
     </div>
-    <nav class="flow-nav" aria-label="Jump between frames">
-      <button data-target="access-home" class="active">1. Access Home</button>
-      <button data-target="ai-suggestions">2. AI Suggestions</button>
-      <button data-target="permission-builder">3. Permission Builder</button>
-      <button data-target="rule-builder">4. Rule Builder</button>
-      <button data-target="simulation">5. Simulation</button>
-      <button data-target="governance">6. Governance</button>
-      <button data-target="recommendations">7. Recommendations</button>
-    </nav>
+    <div class="right">
+      <span>Design</span>
+      <span>Workflow</span>
+      <span>Settings</span>
+      <button class="primary">Access this application</button>
+    </div>
   </header>
 
-  <main class="container">
-    <section class="frame" id="access-home">
-      <span class="pill">Frame: Access Control Home</span>
-      <div class="topbar">
-        <strong>Acme Data Platform</strong>
-        <span class="muted">Environment: Production</span>
-        <span class="avatar" aria-label="User avatar">JS</span>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="side-group">
+        <div class="side-label">Permissions</div>
+        <div class="side-item active">User Permissions</div>
+        <div class="side-item">Portal User Permissions</div>
       </div>
-      <div class="layout-two">
-        <aside class="sidebar">
+      <div class="side-group">
+        <div class="side-label">Personalization</div>
+        <div class="side-item">Localization</div>
+        <div class="side-item">Contextual Messages</div>
+        <div class="side-item">Record Templates</div>
+      </div>
+      <div class="side-group">
+        <div class="side-label">Developer Tools</div>
+        <div class="side-item">Schema Builder</div>
+        <div class="side-item">Application IDE</div>
+        <div class="side-item">Widgets</div>
+        <div class="side-item">Variables</div>
+        <div class="side-item">Helpers</div>
+      </div>
+    </aside>
+
+    <main class="content">
+      <section class="page-card">
+        <h1>Users</h1>
+        <p class="subtitle">
+          Revamped UX flow aligned to your current Zoho Creator settings structure:
+          keep existing tabs, add AI-native RBAC and ABAC in-place.
+        </p>
+
+        <div class="flow-stepper">
+          <span class="flow-step">1. Define Permission Profiles (RBAC)</span>
+          <span class="flow-step">2. Map Role Hierarchy (RBAC)</span>
+          <span class="flow-step">3. Add Attribute Rules (ABAC)</span>
+          <span class="flow-step">4. Simulate Decisions</span>
+          <span class="flow-step">5. Monitor and Refine</span>
+        </div>
+
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="permissions">Permissions</button>
+          <button class="tab-btn" data-tab="roles">Roles</button>
+          <button class="tab-btn" data-tab="sharing">Data Sharing</button>
+          <button class="tab-btn" data-tab="simulator">Policy Simulator</button>
+          <button class="tab-btn" data-tab="insights">Security Insights</button>
+        </div>
+
+        <section class="tab-panel active" id="permissions">
+          <div class="top-actions">
+            <div class="left-actions">
+              <button class="primary">Add Permission</button>
+              <button class="ghost" id="openAiAssist">Generate with AI</button>
+            </div>
+            <div class="right-actions">
+              <button>Import Profiles</button>
+              <button>Audit Changes</button>
+            </div>
+          </div>
+
+          <div class="row two">
+            <div class="block">
+              <h3>Permission Profiles</h3>
+              <p class="block-note">Preserve your existing table structure; add confidence/explain columns for AI-assisted changes.</p>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>AI Confidence</th>
+                    <th>Why</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Read</td>
+                    <td>This profile will have read permission for all components.</td>
+                    <td>91%</td>
+                    <td>Derived from usage trends</td>
+                  </tr>
+                  <tr>
+                    <td>Write</td>
+                    <td>This profile will have write permission for all components.</td>
+                    <td>88%</td>
+                    <td>Based on team operations</td>
+                  </tr>
+                  <tr>
+                    <td>Approve Discounts</td>
+                    <td>Approve discount requests above threshold.</td>
+                    <td>94%</td>
+                    <td>Mapped from manager prompts</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="block">
+              <h3>AI Assistant (in-place)</h3>
+              <p class="block-note">Keep this embedded in the Permissions tab so admins do not leave current workflow.</p>
+              <label for="aiPrompt">Natural language policy prompt</label>
+              <textarea id="aiPrompt">Sales reps can view only their records. Managers can approve discounts over 5000.</textarea>
+              <div style="margin-top: 8px; display: flex; gap: 8px;">
+                <button class="primary" id="generateSuggestion">Generate Suggestions</button>
+                <button>Refine Prompt</button>
+              </div>
+              <div style="margin-top: 10px;">
+                <span class="pill">Role: Sales Rep</span>
+                <span class="pill">Action: View</span>
+                <span class="pill">Scope: Own Records</span>
+              </div>
+              <div>
+                <span class="pill">Role: Manager</span>
+                <span class="pill">Action: Approve Discounts</span>
+                <span class="pill">Condition: amount > 5000</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="block" style="margin-top: 12px;">
+            <h3>Permission Editor (existing screen + ABAC extension)</h3>
+            <p class="block-note">Matches your current edit form. Add ABAC rule rows below module permissions, not as a new standalone screen.</p>
+
+            <div class="row two">
+              <div>
+                <label for="permName">Name</label>
+                <input id="permName" value="Read" />
+              </div>
+              <div>
+                <label for="permDesc">Description</label>
+                <input id="permDesc" value="This profile will have read permission for all components." />
+              </div>
+            </div>
+
+            <div style="margin-top: 10px;">
+              <label>Module Permissions</label>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Module</th>
+                    <th>Access</th>
+                    <th>View</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                    <th>More</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Customer OTP Entry</td>
+                    <td><input type="checkbox" checked /></td>
+                    <td><input type="checkbox" checked /></td>
+                    <td><input type="checkbox" /></td>
+                    <td><input type="checkbox" /></td>
+                    <td><input type="checkbox" /></td>
+                  </tr>
+                  <tr>
+                    <td>Customer Personal details</td>
+                    <td><input type="checkbox" checked /></td>
+                    <td><input type="checkbox" checked /></td>
+                    <td><input type="checkbox" checked /></td>
+                    <td><input type="checkbox" /></td>
+                    <td><input type="checkbox" /></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div style="margin-top: 12px;">
+              <label><input type="checkbox" checked id="abacToggle" /> Enable ABAC conditions for this permission</label>
+              <div id="abacBuilder">
+                <div id="conditionList">
+                  <div class="condition-row">
+                    <div class="condition-grid">
+                      <select>
+                        <option>record_owner_id</option>
+                        <option>refund_amount</option>
+                        <option>customer_tier</option>
+                      </select>
+                      <select>
+                        <option>=</option>
+                        <option>!=</option>
+                        <option>&gt;</option>
+                        <option>&lt;</option>
+                      </select>
+                      <input value="current_user_id" />
+                    </div>
+                  </div>
+                </div>
+                <button id="addCondition" class="ghost">+ Add Condition</button>
+              </div>
+            </div>
+
+            <div style="margin-top: 10px; display: flex; gap: 8px;">
+              <button class="primary">Update</button>
+              <button>Cancel</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="tab-panel" id="roles">
+          <div class="top-actions">
+            <div class="left-actions">
+              <button>Expand All</button>
+              <button>Collapse All</button>
+            </div>
+            <div class="right-actions">
+              <button>Manage Role Hierarchy</button>
+              <button class="primary">Add Role</button>
+              <button class="ghost">AI Role Suggest</button>
+            </div>
+          </div>
+
+          <div class="row two">
+            <div class="block">
+              <h3>Role Hierarchy</h3>
+              <p class="block-note">Unchanged layout from your screenshot, with optional AI-suggested missing roles.</p>
+              <ul class="tree">
+                <li>CEO
+                  <ul class="tree nested">
+                    <li>Manager
+                      <ul class="tree nested">
+                        <li>Sales Rep</li>
+                        <li>Support Executive</li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+
+            <div class="block">
+              <h3>Role Details</h3>
+              <p class="block-note">Attach RBAC profiles and ABAC scope constraints at role level.</p>
+              <label>Selected Role</label>
+              <input value="Manager" />
+
+              <label style="margin-top: 8px;">Assigned Permission Profiles</label>
+              <div>
+                <span class="pill">Read</span>
+                <span class="pill">Write</span>
+                <span class="pill">Approve Discounts</span>
+              </div>
+
+              <label style="margin-top: 8px;">ABAC Guardrails</label>
+              <div>
+                <span class="pill">region = user.region</span>
+                <span class="pill">refund_amount <= 20000</span>
+              </div>
+
+              <div style="margin-top: 10px; display: flex; gap: 8px;">
+                <button class="primary">Save Role</button>
+                <button>Reset</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="tab-panel" id="sharing">
+          <div class="top-actions">
+            <div class="left-actions"></div>
+            <div class="right-actions">
+              <button class="primary">New Share Rule</button>
+            </div>
+          </div>
+
+          <div class="block">
+            <h3>Data Sharing Rules</h3>
+            <p class="block-note">Use this tab as ABAC policy registry (resource sharing + contextual constraints).</p>
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Form</th>
+                  <th>Shared From</th>
+                  <th>Shared To</th>
+                  <th>Level of access</th>
+                  <th>ABAC Condition</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Data share</td>
+                  <td>Customer OTP Entry</td>
+                  <td>R:CEO</td>
+                  <td>R:Manager</td>
+                  <td>Read Only</td>
+                  <td>record.region = user.region</td>
+                </tr>
+                <tr>
+                  <td>Refund approval policy</td>
+                  <td>Refund Requests</td>
+                  <td>R:Sales Rep</td>
+                  <td>R:Manager</td>
+                  <td>Escalate</td>
+                  <td>refund_amount > 5000 and customer_tier != premium</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="block" style="margin-top: 12px;">
+            <h3>Visual ABAC Rule Builder</h3>
+            <p class="block-note">Reusable condition blocks with optional natural language mirror for non-technical admins.</p>
+            <div class="condition-row">
+              <div class="condition-grid">
+                <select>
+                  <option>refund_amount</option>
+                  <option>customer_tier</option>
+                  <option>region</option>
+                </select>
+                <select>
+                  <option>&gt;</option>
+                  <option>=</option>
+                  <option>!=</option>
+                </select>
+                <input value="5000" />
+              </div>
+              <div class="condition-grid">
+                <select>
+                  <option>customer_tier</option>
+                  <option>record_owner_id</option>
+                </select>
+                <select>
+                  <option>!=</option>
+                  <option>=</option>
+                </select>
+                <input value="premium" />
+              </div>
+            </div>
+            <p class="block-note"><strong>Natural language:</strong> Require manager approval if refund amount exceeds 5000 and customer tier is not premium.</p>
+          </div>
+        </section>
+
+        <section class="tab-panel" id="simulator">
+          <div class="row two">
+            <div class="block">
+              <h3>Policy Simulator</h3>
+              <p class="block-note">Single-click validation before deployment. Show RBAC decision first, ABAC checks second.</p>
+              <label for="simRole">Role</label>
+              <select id="simRole">
+                <option>Sales Rep</option>
+                <option>Manager</option>
+                <option>CEO</option>
+              </select>
+
+              <label for="simAction" style="margin-top: 8px;">Action</label>
+              <select id="simAction">
+                <option>View Record</option>
+                <option>Approve Discount</option>
+              </select>
+
+              <label for="simOwnership" style="margin-top: 8px;">Record Ownership</label>
+              <select id="simOwnership">
+                <option>Own Record</option>
+                <option>Other User Record</option>
+              </select>
+
+              <label for="simAmount" style="margin-top: 8px;">Refund Amount</label>
+              <input id="simAmount" type="number" value="7000" />
+
+              <label for="simTier" style="margin-top: 8px;">Customer Tier</label>
+              <select id="simTier">
+                <option>premium</option>
+                <option>standard</option>
+              </select>
+
+              <div style="margin-top: 10px;">
+                <button class="primary" id="runSimulation">Run Simulation</button>
+              </div>
+            </div>
+
+            <div class="block">
+              <h3>Decision Trace</h3>
+              <p class="block-note">Explainability output to build trust and speed up audits.</p>
+              <div class="decision denied" id="decisionCard">
+                <div class="status denied" id="decisionStatus">Denied</div>
+                <div id="decisionReason">Denied because Sales Rep can view only own records.</div>
+                <ol class="trace" id="decisionTrace">
+                  <li>RBAC check: Sales Rep + View Record = allowed with scope Own.</li>
+                  <li>Ownership check failed: selected Other User Record.</li>
+                  <li>Final decision: Denied.</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="tab-panel" id="insights">
+          <div class="row three">
+            <div class="metric">
+              <div class="name">Total Roles</div>
+              <div class="value">8</div>
+            </div>
+            <div class="metric">
+              <div class="name">Active Users</div>
+              <div class="value">241</div>
+            </div>
+            <div class="metric">
+              <div class="name">Risk Alerts</div>
+              <div class="value">3</div>
+            </div>
+          </div>
+
+          <div class="alert">
+            <strong>High severity:</strong> User John accessed 500 records in 2 minutes (normal baseline: ~20/day).
+            <div style="margin-top: 8px; display: flex; gap: 8px;">
+              <button class="ghost">Restrict Access</button>
+              <button>Investigate</button>
+            </div>
+          </div>
+
+          <div class="alert">
+            <strong>Recommendation:</strong> Managers have unused write permissions on two modules. Consider reducing scope to read + approve only.
+            <div style="margin-top: 8px;">
+              <button class="ghost">Apply Suggested Tightening</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="blueprint">
+          <h3>Clean RBAC + ABAC incorporation blueprint (mapped to your current UI)</h3>
           <ul>
-            <li>Dashboard</li>
-            <li>Data</li>
-            <li>Workflows</li>
-            <li class="active">⚡ Access Control</li>
+            <li><strong>Permissions tab:</strong> keep module matrix as RBAC baseline; add ABAC condition block under each permission profile.</li>
+            <li><strong>Roles tab:</strong> keep hierarchy tree; attach permission profiles + optional ABAC guardrails at role level.</li>
+            <li><strong>Data Sharing tab:</strong> convert into ABAC policy registry (resource, shared-from/to, condition, effect).</li>
+            <li><strong>Policy Simulator tab:</strong> run "who can do what on which record" tests before publish, with decision trace.</li>
+            <li><strong>Security Insights:</strong> monitor anomalies and auto-suggest least-privilege cleanups.</li>
+            <li><strong>AI behavior:</strong> AI suggests rules and explanations, but admin review/approve remains mandatory.</li>
           </ul>
-        </aside>
-        <div class="panel">
-          <h2 class="frame-title">Define Access Control</h2>
-          <p class="frame-subtitle">Describe who should access what</p>
-          <label for="prompt" class="muted">Input Box (chat style)</label>
-          <textarea id="prompt" placeholder="e.g., Sales reps can only see their own leads">Sales reps can only see their own leads and managers can approve discounts.</textarea>
-          <div class="btn-row">
-            <button id="generateBtn" class="primary">Generate Access Rules</button>
-            <button class="ghost" data-target="permission-builder">View Existing Roles</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="frame" id="ai-suggestions">
-      <span class="pill">Frame: AI Suggestions</span>
-      <h2 class="frame-title">AI Interpretation</h2>
-      <p class="frame-subtitle">Split-screen review of input and generated RBAC rules</p>
-      <div class="split">
-        <div class="panel">
-          <h3 class="frame-title">Left Panel: Input</h3>
-          <p class="frame-subtitle">User prompt (editable)</p>
-          <textarea id="inputMirror"></textarea>
-        </div>
-        <div class="stack">
-          <div class="panel">
-            <h3 class="frame-title">Right Panel: AI Output</h3>
-            <p class="muted"><strong>Roles Detected:</strong> Sales Rep, Manager</p>
-          </div>
-          <div class="card">
-            <h4>Permission Card 1</h4>
-            <div class="kv">
-              <div class="k">Role</div><div>Sales Rep</div>
-              <div class="k">Action</div><div>View Leads</div>
-              <div class="k">Scope</div><div>Own</div>
-              <div class="k">Confidence</div><div>92%</div>
-            </div>
-            <div class="btn-row">
-              <button>Edit</button>
-              <button>Why?</button>
-            </div>
-          </div>
-          <div class="card">
-            <h4>Permission Card 2</h4>
-            <div class="kv">
-              <div class="k">Role</div><div>Manager</div>
-              <div class="k">Action</div><div>Approve Discounts</div>
-              <div class="k">Scope</div><div>All</div>
-            </div>
-          </div>
-          <div class="btn-row">
-            <button id="approveContinueBtn" class="primary">Approve &amp; Continue</button>
-            <button>Refine Prompt</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="frame" id="permission-builder">
-      <span class="pill">Frame: Edit Permissions</span>
-      <h2 class="frame-title">Visual Permission Builder</h2>
-      <p class="frame-subtitle">Editable table + right drawer for quick updates</p>
-
-      <div class="btn-row">
-        <button class="primary">+ Add Permission</button>
-        <select aria-label="Filter by role">
-          <option>Filter Role: All</option>
-          <option>Sales Rep</option>
-          <option>Manager</option>
-        </select>
-        <select aria-label="Filter by resource">
-          <option>Filter Resource: All</option>
-          <option>Leads</option>
-          <option>Discounts</option>
-        </select>
-      </div>
-
-      <div class="table-layout">
-        <div>
-          <table>
-            <thead>
-              <tr>
-                <th>Role</th>
-                <th>Resource</th>
-                <th>Action</th>
-                <th>Scope</th>
-                <th>Conditions</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Sales Rep</td>
-                <td>Leads</td>
-                <td>View</td>
-                <td>Own</td>
-                <td>-</td>
-                <td>Edit / Delete</td>
-              </tr>
-              <tr>
-                <td>Manager</td>
-                <td>Leads</td>
-                <td>View</td>
-                <td>All</td>
-                <td>-</td>
-                <td>Edit / Delete</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <aside class="drawer">
-          <h4>Right Drawer (on Edit)</h4>
-          <div class="form-grid">
-            <label class="muted">Resource</label>
-            <select><option>Leads</option></select>
-            <label class="muted">Action</label>
-            <select><option>View</option></select>
-            <label class="muted">Scope</label>
-            <select><option>Own</option><option>All</option></select>
-            <label class="toggle"><input type="checkbox" checked /> Restrict to own data</label>
-          </div>
-        </aside>
-      </div>
-      <div class="btn-row">
-        <button id="toConditionsBtn" class="primary">Add Conditions</button>
-      </div>
-    </section>
-
-    <section class="frame" id="rule-builder">
-      <span class="pill">Frame: Add Conditions</span>
-      <h2 class="frame-title">Context-Aware Rule Builder</h2>
-      <p class="frame-subtitle">Switch between visual blocks and natural language mode</p>
-      <div class="btn-row">
-        <div class="mode-switch" role="tablist" aria-label="Rule builder mode">
-          <button id="visualModeBtn" class="active">Visual</button>
-          <button id="naturalModeBtn">Natural Language</button>
-        </div>
-      </div>
-
-      <div id="visualRule" class="rule-block">
-        <div><strong>IF</strong></div>
-        <div class="rule-line">
-          <select><option>refund_amount</option></select>
-          <select><option>&gt;</option></select>
-          <input value="5000" />
-          <span class="muted">(Value)</span>
-        </div>
-        <div><strong>AND</strong></div>
-        <div class="rule-line">
-          <select><option>customer_tier</option></select>
-          <select><option>!=</option></select>
-          <input value="premium" />
-          <span class="muted">(Value)</span>
-        </div>
-        <div><strong>THEN</strong></div>
-        <select><option>Require Approval</option></select>
-      </div>
-
-      <div id="naturalRule" class="rule-block" style="display: none;">
-        <label class="muted">Natural language view</label>
-        <textarea>Require approval if refund exceeds 5000 and customer is not premium.</textarea>
-      </div>
-      <div class="btn-row">
-        <button id="toSimulationBtn" class="primary">Test via Simulation</button>
-      </div>
-    </section>
-
-    <section class="frame" id="simulation">
-      <span class="pill">Frame: Test Access</span>
-      <h2 class="frame-title">Access Simulation Screen</h2>
-      <div class="sim-grid">
-        <div class="panel">
-          <h3 class="frame-title">Inputs Panel</h3>
-          <div class="form-grid">
-            <label class="muted">Role</label>
-            <select id="simRole">
-              <option>Sales Rep</option>
-              <option>Manager</option>
-            </select>
-            <label class="muted">Action</label>
-            <select id="simAction">
-              <option>View Leads</option>
-              <option>Approve Discounts</option>
-            </select>
-            <label class="muted">Resource</label>
-            <select id="simResource">
-              <option>Leads</option>
-              <option>Discounts</option>
-            </select>
-            <label class="muted">Record Selector</label>
-            <select id="simRecord">
-              <option>Record owned by Sales Rep</option>
-              <option>Record owned by another user</option>
-            </select>
-          </div>
-          <div class="btn-row">
-            <button id="runSimBtn" class="primary">Run Simulation</button>
-          </div>
-        </div>
-        <div class="result">
-          <h3 class="frame-title">Result Panel</h3>
-          <div id="simStatus" class="status denied">❌ Denied</div>
-          <div id="simExplanation" class="card">Denied because Sales Rep can only access own records.</div>
-          <div class="btn-row">
-            <button data-target="permission-builder">Modify Rule</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="frame" id="governance">
-      <span class="pill">Frame: Security Insights</span>
-      <h2 class="frame-title">AI Governance Dashboard</h2>
-      <div class="metrics">
-        <article class="metric">
-          <div class="name">Total Roles</div>
-          <div class="value">8</div>
-        </article>
-        <article class="metric">
-          <div class="name">Active Users</div>
-          <div class="value">241</div>
-        </article>
-        <article class="metric">
-          <div class="name">Risk Alerts</div>
-          <div class="value">3</div>
-        </article>
-      </div>
-      <article class="alert">
-        <span class="severity">HIGH</span>
-        <p><strong>User:</strong> John</p>
-        <p><strong>Activity:</strong> Accessed 500 records in 2 mins</p>
-        <p><strong>Normal:</strong> ~20/day</p>
-        <div class="btn-row">
-          <button class="ghost">Restrict Access</button>
-          <button>Investigate</button>
-        </div>
-      </article>
-    </section>
-
-    <section class="frame" id="recommendations">
-      <span class="pill">Frame: Suggestions</span>
-      <h2 class="frame-title">AI Recommendations Panel</h2>
-      <div class="reco-grid">
-        <article class="card">
-          <h4>Managers have unused permissions</h4>
-          <button>Review</button>
-        </article>
-        <article class="card">
-          <h4>Consider adding approval for high-value discounts</h4>
-          <button class="ghost">Apply</button>
-        </article>
-      </div>
-
-      <section class="principles">
-        <strong>Design Principles</strong>
-        <ul>
-          <li>Conversational first</li>
-          <li>Editable always</li>
-          <li>Explainability everywhere</li>
-          <li>Simulation before deployment</li>
-          <li>AI suggests, user controls</li>
-        </ul>
+        </section>
       </section>
-
-      <section class="figma">
-        <strong>Figma Layer Structure</strong>
-        <ul>
-          <li>Page: RBAC</li>
-          <li>Frame: Access Home</li>
-          <li>Frame: AI Suggestions</li>
-          <li>Frame: Permission Builder</li>
-          <li>Frame: Rule Builder</li>
-          <li>Frame: Simulation</li>
-          <li>Frame: Governance Dashboard</li>
-          <li>Frame: Recommendations</li>
-          <li>Components: Input Box, Role Card, Permission Table Row, Condition Block, Alert Card</li>
-        </ul>
-      </section>
-    </section>
-  </main>
+    </main>
+  </div>
 
   <script>
-    const navButtons = document.querySelectorAll(".flow-nav button");
-    const targetButtons = document.querySelectorAll("button[data-target]");
+    const tabButtons = document.querySelectorAll(".tab-btn");
+    const tabPanels = document.querySelectorAll(".tab-panel");
 
-    function goToFrame(id) {
-      const section = document.getElementById(id);
-      if (!section) return;
-      section.scrollIntoView({ behavior: "smooth", block: "start" });
-      navButtons.forEach((button) => {
-        button.classList.toggle("active", button.dataset.target === id);
-      });
+    function openTab(tabId) {
+      tabButtons.forEach((btn) => btn.classList.toggle("active", btn.dataset.tab === tabId));
+      tabPanels.forEach((panel) => panel.classList.toggle("active", panel.id === tabId));
     }
 
-    navButtons.forEach((button) => {
-      button.addEventListener("click", () => goToFrame(button.dataset.target));
+    tabButtons.forEach((btn) => {
+      btn.addEventListener("click", () => openTab(btn.dataset.tab));
     });
 
-    targetButtons.forEach((button) => {
-      button.addEventListener("click", () => goToFrame(button.dataset.target));
+    const generateSuggestion = document.getElementById("generateSuggestion");
+    const permName = document.getElementById("permName");
+    const permDesc = document.getElementById("permDesc");
+    generateSuggestion.addEventListener("click", () => {
+      permName.value = "Sales Rep Scoped Read";
+      permDesc.value = "Read-only access limited to own records with ABAC ownership check.";
+      openTab("permissions");
     });
 
-    const promptInput = document.getElementById("prompt");
-    const inputMirror = document.getElementById("inputMirror");
-    const generateBtn = document.getElementById("generateBtn");
-    const approveContinueBtn = document.getElementById("approveContinueBtn");
-    const toConditionsBtn = document.getElementById("toConditionsBtn");
-    const toSimulationBtn = document.getElementById("toSimulationBtn");
-
-    generateBtn.addEventListener("click", () => {
-      inputMirror.value = promptInput.value.trim() || promptInput.placeholder;
-      goToFrame("ai-suggestions");
+    const abacToggle = document.getElementById("abacToggle");
+    const abacBuilder = document.getElementById("abacBuilder");
+    abacToggle.addEventListener("change", () => {
+      abacBuilder.style.display = abacToggle.checked ? "block" : "none";
     });
 
-    approveContinueBtn.addEventListener("click", () => goToFrame("permission-builder"));
-    toConditionsBtn.addEventListener("click", () => goToFrame("rule-builder"));
-    toSimulationBtn.addEventListener("click", () => goToFrame("simulation"));
-
-    const visualModeBtn = document.getElementById("visualModeBtn");
-    const naturalModeBtn = document.getElementById("naturalModeBtn");
-    const visualRule = document.getElementById("visualRule");
-    const naturalRule = document.getElementById("naturalRule");
-
-    visualModeBtn.addEventListener("click", () => {
-      visualModeBtn.classList.add("active");
-      naturalModeBtn.classList.remove("active");
-      visualRule.style.display = "grid";
-      naturalRule.style.display = "none";
+    document.getElementById("addCondition").addEventListener("click", () => {
+      const list = document.getElementById("conditionList");
+      const row = document.createElement("div");
+      row.className = "condition-row";
+      row.innerHTML = `
+        <div class="condition-grid">
+          <select>
+            <option>refund_amount</option>
+            <option>customer_tier</option>
+            <option>region</option>
+          </select>
+          <select>
+            <option>&gt;</option>
+            <option>=</option>
+            <option>!=</option>
+          </select>
+          <input value="5000" />
+        </div>
+      `;
+      list.appendChild(row);
     });
 
-    naturalModeBtn.addEventListener("click", () => {
-      naturalModeBtn.classList.add("active");
-      visualModeBtn.classList.remove("active");
-      visualRule.style.display = "none";
-      naturalRule.style.display = "grid";
-    });
+    document.getElementById("runSimulation").addEventListener("click", () => {
+      const role = document.getElementById("simRole").value;
+      const action = document.getElementById("simAction").value;
+      const ownership = document.getElementById("simOwnership").value;
+      const amount = Number(document.getElementById("simAmount").value || 0);
+      const tier = document.getElementById("simTier").value;
 
-    const runSimBtn = document.getElementById("runSimBtn");
-    const simRole = document.getElementById("simRole");
-    const simAction = document.getElementById("simAction");
-    const simRecord = document.getElementById("simRecord");
-    const simStatus = document.getElementById("simStatus");
-    const simExplanation = document.getElementById("simExplanation");
+      const card = document.getElementById("decisionCard");
+      const status = document.getElementById("decisionStatus");
+      const reason = document.getElementById("decisionReason");
+      const trace = document.getElementById("decisionTrace");
 
-    runSimBtn.addEventListener("click", () => {
-      const role = simRole.value;
-      const action = simAction.value;
-      const record = simRecord.value;
+      let allowed = true;
+      const steps = [];
 
-      const isDenied =
-        role === "Sales Rep" &&
-        action === "View Leads" &&
-        record === "Record owned by another user";
-
-      if (isDenied) {
-        simStatus.textContent = "❌ Denied";
-        simStatus.classList.add("denied");
-        simStatus.classList.remove("allowed");
-        simExplanation.textContent = "Denied because Sales Rep can only access own records.";
-      } else {
-        simStatus.textContent = "✅ Allowed";
-        simStatus.classList.add("allowed");
-        simStatus.classList.remove("denied");
-        simExplanation.textContent = "Allowed based on current role, scope, and condition rules.";
+      if (action === "View Record" && role === "Sales Rep") {
+        steps.push("RBAC check: Sales Rep can View Record with scope Own.");
+        if (ownership === "Other User Record") {
+          allowed = false;
+          steps.push("Ownership ABAC check failed: record_owner_id != current_user_id.");
+        } else {
+          steps.push("Ownership ABAC check passed.");
+        }
       }
+
+      if (action === "Approve Discount") {
+        if (role === "Sales Rep") {
+          allowed = false;
+          steps.push("RBAC check failed: Sales Rep has no Approve Discount permission.");
+        } else {
+          steps.push("RBAC check passed: role can Approve Discount.");
+          if (amount > 5000 && tier !== "premium" && role !== "Manager" && role !== "CEO") {
+            allowed = false;
+            steps.push("ABAC check failed: only Manager/CEO can approve non-premium refunds > 5000.");
+          } else {
+            steps.push("ABAC threshold checks passed.");
+          }
+        }
+      }
+
+      if (allowed) {
+        card.classList.remove("denied");
+        card.classList.add("allowed");
+        status.classList.remove("denied");
+        status.classList.add("allowed");
+        status.textContent = "Allowed";
+        reason.textContent = "Request satisfies RBAC permissions and ABAC conditions.";
+      } else {
+        card.classList.remove("allowed");
+        card.classList.add("denied");
+        status.classList.remove("allowed");
+        status.classList.add("denied");
+        status.textContent = "Denied";
+        reason.textContent = "Request blocked by RBAC scope or ABAC condition checks.";
+      }
+
+      steps.push(`Final decision: ${allowed ? "Allowed" : "Denied"}.`);
+      trace.innerHTML = steps.map((step) => `<li>${step}</li>`).join("");
     });
   </script>
 </body>
