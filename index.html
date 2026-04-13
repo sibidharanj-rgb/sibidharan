@@ -3,22 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Zoho Creator RBAC + ABAC Revamp Flow</title>
+  <title>Permission Center - Unified RBAC + ABAC</title>
   <style>
     :root {
       --bg: #f5f6fb;
       --surface: #ffffff;
       --line: #dfe3ef;
       --text: #1f2937;
-      --muted: #6b7280;
+      --muted: #64748b;
       --primary: #2f56ee;
       --primary-soft: #edf2ff;
       --success: #157f4a;
       --danger: #b91c1c;
-      --warning: #b45309;
       --topbar: #252a57;
       --radius: 10px;
-      --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      --shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
     }
 
     * {
@@ -37,10 +36,9 @@
       background: var(--topbar);
       color: #fff;
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
       padding: 0 14px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       position: sticky;
       top: 0;
       z-index: 20;
@@ -50,15 +48,15 @@
     .topbar .right {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
       font-size: 0.85rem;
     }
 
     .app-chip {
       padding: 6px 10px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.09);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
     }
 
     .shell {
@@ -78,7 +76,7 @@
     }
 
     .side-label {
-      color: #606b82;
+      color: #66758c;
       font-size: 0.72rem;
       font-weight: 700;
       margin-bottom: 8px;
@@ -114,116 +112,62 @@
 
     h1 {
       margin: 0;
-      font-size: 1.25rem;
+      font-size: 1.22rem;
     }
 
     .subtitle {
       margin: 6px 0 0;
       color: var(--muted);
       font-size: 0.92rem;
+      max-width: 900px;
     }
 
-    .flow-stepper {
+    .flow-line {
       margin-top: 14px;
-      padding: 12px;
-      border: 1px dashed #cfd8f8;
+      border: 1px dashed #cdd8fb;
       background: #f8faff;
-      border-radius: var(--radius);
-      font-size: 0.85rem;
+      border-radius: 8px;
+      padding: 10px;
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
       align-items: center;
+      font-size: 0.84rem;
     }
 
     .flow-step {
+      border: 1px solid #d6dffc;
+      color: #2e4fca;
       background: #fff;
-      border: 1px solid #d7defa;
       border-radius: 999px;
-      padding: 5px 9px;
-      color: #2f56ee;
+      padding: 4px 9px;
       font-weight: 600;
     }
 
-    .tabs {
-      margin-top: 16px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      border-bottom: 1px solid var(--line);
-      padding-bottom: 10px;
-    }
-
-    .tab-btn {
-      border: 1px solid var(--line);
-      background: #fff;
-      color: var(--muted);
-      border-radius: 999px;
-      padding: 7px 12px;
-      cursor: pointer;
-      font-size: 0.85rem;
-    }
-
-    .tab-btn.active {
-      color: var(--primary);
-      border-color: #c8d5ff;
-      background: var(--primary-soft);
-      font-weight: 600;
-    }
-
-    .tab-panel {
-      display: none;
+    .section {
       margin-top: 14px;
-    }
-
-    .tab-panel.active {
-      display: block;
-    }
-
-    .row {
-      display: grid;
-      gap: 12px;
-    }
-
-    .row.two {
-      grid-template-columns: 1.2fr 0.9fr;
-    }
-
-    .row.three {
-      grid-template-columns: repeat(3, minmax(160px, 1fr));
-    }
-
-    .block {
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: #fff;
       padding: 12px;
     }
 
-    .block h3 {
+    .section h2 {
       margin: 0;
-      font-size: 0.95rem;
+      font-size: 0.98rem;
     }
 
-    .block-note {
+    .note {
       margin: 4px 0 10px;
-      font-size: 0.84rem;
       color: var(--muted);
+      font-size: 0.84rem;
     }
 
-    .top-actions {
+    .actions {
+      margin-top: 10px;
       display: flex;
-      flex-wrap: wrap;
       gap: 8px;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
-
-    .left-actions,
-    .right-actions {
-      display: flex;
       flex-wrap: wrap;
-      gap: 8px;
     }
 
     button {
@@ -248,9 +192,28 @@
       color: #274fdf;
     }
 
-    textarea,
-    input,
-    select {
+    .grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .grid.two {
+      grid-template-columns: 1.4fr 1fr;
+    }
+
+    .grid.three {
+      grid-template-columns: repeat(3, minmax(180px, 1fr));
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: #475569;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    input, textarea, select {
       width: 100%;
       border: 1px solid var(--line);
       border-radius: 8px;
@@ -262,15 +225,7 @@
 
     textarea {
       resize: vertical;
-      min-height: 86px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 6px;
-      font-size: 0.82rem;
-      color: #475569;
-      font-weight: 600;
+      min-height: 82px;
     }
 
     table {
@@ -283,8 +238,7 @@
       background: #fff;
     }
 
-    th,
-    td {
+    th, td {
       border-bottom: 1px solid #edf1f8;
       text-align: left;
       padding: 8px;
@@ -303,49 +257,14 @@
 
     .pill {
       display: inline-block;
-      border: 1px solid #cfd9ff;
+      border: 1px solid #d2dcff;
       background: #eef2ff;
-      color: #324fcf;
+      color: #304dc4;
       border-radius: 999px;
       font-size: 0.75rem;
       padding: 2px 8px;
       margin-right: 6px;
       margin-bottom: 4px;
-    }
-
-    .tree {
-      list-style: none;
-      margin: 0;
-      padding-left: 0;
-      font-size: 0.9rem;
-    }
-
-    .tree li {
-      margin: 6px 0;
-      padding-left: 18px;
-      position: relative;
-    }
-
-    .tree li::before {
-      content: "";
-      width: 8px;
-      height: 8px;
-      border: 1px solid #c7d2f5;
-      background: #fff;
-      position: absolute;
-      left: 0;
-      top: 6px;
-    }
-
-    .nested {
-      margin-left: 20px;
-    }
-
-    .condition-grid {
-      display: grid;
-      grid-template-columns: 1fr 120px 1fr;
-      gap: 8px;
-      margin-bottom: 8px;
     }
 
     .condition-row {
@@ -356,12 +275,19 @@
       margin-bottom: 8px;
     }
 
+    .condition-grid {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: 1fr 120px 1fr;
+    }
+
     .decision {
       border: 1px solid var(--line);
       border-left: 4px solid #94a3b8;
       border-radius: 8px;
       padding: 10px;
       background: #fff;
+      font-size: 0.84rem;
     }
 
     .decision.allowed {
@@ -388,7 +314,6 @@
     .trace {
       margin: 8px 0 0;
       padding-left: 18px;
-      font-size: 0.84rem;
       color: #334155;
     }
 
@@ -410,34 +335,14 @@
       font-weight: 700;
     }
 
-    .alert {
-      border: 1px solid #f8d6af;
-      border-left: 4px solid var(--warning);
-      border-radius: 8px;
-      background: #fffaf2;
-      padding: 10px;
-      margin-top: 10px;
-      font-size: 0.84rem;
-    }
-
-    .blueprint {
-      margin-top: 14px;
+    .tip {
+      margin-top: 12px;
       border: 1px dashed #c7d2fe;
       border-radius: 10px;
       background: #f8faff;
-      padding: 12px;
-    }
-
-    .blueprint h3 {
-      margin: 0 0 8px;
-      font-size: 0.95rem;
-    }
-
-    .blueprint ul {
-      margin: 8px 0 0;
-      padding-left: 18px;
-      color: #344255;
-      font-size: 0.86rem;
+      padding: 10px;
+      font-size: 0.84rem;
+      color: #334155;
     }
 
     @media (max-width: 1080px) {
@@ -450,8 +355,7 @@
         border-bottom: 1px solid var(--line);
       }
 
-      .row.two,
-      .row.three {
+      .grid.two, .grid.three {
         grid-template-columns: 1fr;
       }
 
@@ -472,7 +376,7 @@
       <span>Design</span>
       <span>Workflow</span>
       <span>Settings</span>
-      <button class="primary">Access this application</button>
+      <span class="app-chip">Access this application</span>
     </div>
   </header>
 
@@ -501,318 +405,199 @@
 
     <main class="content">
       <section class="page-card">
-        <h1>Users</h1>
+        <h1>Permission Center (Single Entry Point)</h1>
         <p class="subtitle">
-          Revamped UX flow aligned to your current Zoho Creator settings structure:
-          keep existing tabs, add AI-native RBAC and ABAC in-place.
+          One unified screen for RBAC + ABAC. Configure permission profile, role assignment, conditional access,
+          and validation in one guided flow without switching tabs.
         </p>
 
-        <div class="flow-stepper">
-          <span class="flow-step">1. Define Permission Profiles (RBAC)</span>
-          <span class="flow-step">2. Map Role Hierarchy (RBAC)</span>
-          <span class="flow-step">3. Add Attribute Rules (ABAC)</span>
-          <span class="flow-step">4. Simulate Decisions</span>
-          <span class="flow-step">5. Monitor and Refine</span>
+        <div class="flow-line">
+          <span class="flow-step">1) Define Permission</span>
+          <span>&rarr;</span>
+          <span class="flow-step">2) Assign Role</span>
+          <span>&rarr;</span>
+          <span class="flow-step">3) Add ABAC Conditions</span>
+          <span>&rarr;</span>
+          <span class="flow-step">4) Validate Access</span>
+          <span>&rarr;</span>
+          <span class="flow-step">5) Save Policy</span>
         </div>
 
-        <div class="tabs">
-          <button class="tab-btn active" data-tab="permissions">Permissions</button>
-          <button class="tab-btn" data-tab="roles">Roles</button>
-          <button class="tab-btn" data-tab="sharing">Data Sharing</button>
-          <button class="tab-btn" data-tab="simulator">Policy Simulator</button>
-          <button class="tab-btn" data-tab="insights">Security Insights</button>
-        </div>
+        <section class="section">
+          <h2>A. Permission Definition (RBAC)</h2>
+          <p class="note">Start here. Create or edit one permission profile as the primary control object.</p>
+          <div class="grid two">
+            <div>
+              <label for="permName">Permission Name</label>
+              <input id="permName" value="Read - Customer OTP Entry" />
 
-        <section class="tab-panel active" id="permissions">
-          <div class="top-actions">
-            <div class="left-actions">
-              <button class="primary">Add Permission</button>
-              <button class="ghost" id="openAiAssist">Generate with AI</button>
-            </div>
-            <div class="right-actions">
-              <button>Import Profiles</button>
-              <button>Audit Changes</button>
-            </div>
-          </div>
+              <label for="permDesc" style="margin-top: 8px;">Description</label>
+              <textarea id="permDesc">Read access for customer OTP records with scoped restrictions.</textarea>
 
-          <div class="row two">
-            <div class="block">
-              <h3>Permission Profiles</h3>
-              <p class="block-note">Preserve your existing table structure; add confidence/explain columns for AI-assisted changes.</p>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>AI Confidence</th>
-                    <th>Why</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Read</td>
-                    <td>This profile will have read permission for all components.</td>
-                    <td>91%</td>
-                    <td>Derived from usage trends</td>
-                  </tr>
-                  <tr>
-                    <td>Write</td>
-                    <td>This profile will have write permission for all components.</td>
-                    <td>88%</td>
-                    <td>Based on team operations</td>
-                  </tr>
-                  <tr>
-                    <td>Approve Discounts</td>
-                    <td>Approve discount requests above threshold.</td>
-                    <td>94%</td>
-                    <td>Mapped from manager prompts</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <div class="block">
-              <h3>AI Assistant (in-place)</h3>
-              <p class="block-note">Keep this embedded in the Permissions tab so admins do not leave current workflow.</p>
-              <label for="aiPrompt">Natural language policy prompt</label>
-              <textarea id="aiPrompt">Sales reps can view only their records. Managers can approve discounts over 5000.</textarea>
-              <div style="margin-top: 8px; display: flex; gap: 8px;">
-                <button class="primary" id="generateSuggestion">Generate Suggestions</button>
-                <button>Refine Prompt</button>
-              </div>
-              <div style="margin-top: 10px;">
-                <span class="pill">Role: Sales Rep</span>
-                <span class="pill">Action: View</span>
-                <span class="pill">Scope: Own Records</span>
-              </div>
-              <div>
-                <span class="pill">Role: Manager</span>
-                <span class="pill">Action: Approve Discounts</span>
-                <span class="pill">Condition: amount > 5000</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="block" style="margin-top: 12px;">
-            <h3>Permission Editor (existing screen + ABAC extension)</h3>
-            <p class="block-note">Matches your current edit form. Add ABAC rule rows below module permissions, not as a new standalone screen.</p>
-
-            <div class="row two">
-              <div>
-                <label for="permName">Name</label>
-                <input id="permName" value="Read" />
-              </div>
-              <div>
-                <label for="permDesc">Description</label>
-                <input id="permDesc" value="This profile will have read permission for all components." />
+              <div class="actions">
+                <button class="primary">Create Permission</button>
+                <button>Update Existing</button>
               </div>
             </div>
 
-            <div style="margin-top: 10px;">
-              <label>Module Permissions</label>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Module</th>
-                    <th>Access</th>
-                    <th>View</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
-                    <th>More</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Customer OTP Entry</td>
-                    <td><input type="checkbox" checked /></td>
-                    <td><input type="checkbox" checked /></td>
-                    <td><input type="checkbox" /></td>
-                    <td><input type="checkbox" /></td>
-                    <td><input type="checkbox" /></td>
-                  </tr>
-                  <tr>
-                    <td>Customer Personal details</td>
-                    <td><input type="checkbox" checked /></td>
-                    <td><input type="checkbox" checked /></td>
-                    <td><input type="checkbox" checked /></td>
-                    <td><input type="checkbox" /></td>
-                    <td><input type="checkbox" /></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <div style="margin-top: 12px;">
-              <label><input type="checkbox" checked id="abacToggle" /> Enable ABAC conditions for this permission</label>
-              <div id="abacBuilder">
-                <div id="conditionList">
-                  <div class="condition-row">
-                    <div class="condition-grid">
-                      <select>
-                        <option>record_owner_id</option>
-                        <option>refund_amount</option>
-                        <option>customer_tier</option>
-                      </select>
-                      <select>
-                        <option>=</option>
-                        <option>!=</option>
-                        <option>&gt;</option>
-                        <option>&lt;</option>
-                      </select>
-                      <input value="current_user_id" />
-                    </div>
-                  </div>
-                </div>
-                <button id="addCondition" class="ghost">+ Add Condition</button>
-              </div>
-            </div>
-
-            <div style="margin-top: 10px; display: flex; gap: 8px;">
-              <button class="primary">Update</button>
-              <button>Cancel</button>
-            </div>
-          </div>
-        </section>
-
-        <section class="tab-panel" id="roles">
-          <div class="top-actions">
-            <div class="left-actions">
-              <button>Expand All</button>
-              <button>Collapse All</button>
-            </div>
-            <div class="right-actions">
-              <button>Manage Role Hierarchy</button>
-              <button class="primary">Add Role</button>
-              <button class="ghost">AI Role Suggest</button>
-            </div>
-          </div>
-
-          <div class="row two">
-            <div class="block">
-              <h3>Role Hierarchy</h3>
-              <p class="block-note">Unchanged layout from your screenshot, with optional AI-suggested missing roles.</p>
-              <ul class="tree">
-                <li>CEO
-                  <ul class="tree nested">
-                    <li>Manager
-                      <ul class="tree nested">
-                        <li>Sales Rep</li>
-                        <li>Support Executive</li>
-                      </ul>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </div>
-
-            <div class="block">
-              <h3>Role Details</h3>
-              <p class="block-note">Attach RBAC profiles and ABAC scope constraints at role level.</p>
-              <label>Selected Role</label>
-              <input value="Manager" />
-
-              <label style="margin-top: 8px;">Assigned Permission Profiles</label>
+            <div>
+              <label>Existing Permission Profiles</label>
               <div>
                 <span class="pill">Read</span>
                 <span class="pill">Write</span>
                 <span class="pill">Approve Discounts</span>
               </div>
-
-              <label style="margin-top: 8px;">ABAC Guardrails</label>
-              <div>
-                <span class="pill">region = user.region</span>
-                <span class="pill">refund_amount <= 20000</span>
-              </div>
-
-              <div style="margin-top: 10px; display: flex; gap: 8px;">
-                <button class="primary">Save Role</button>
-                <button>Reset</button>
-              </div>
+              <p class="note" style="margin-top: 10px;">
+                Keep this list simple. Users begin from one permission and progressively add role + ABAC constraints below.
+              </p>
             </div>
           </div>
         </section>
 
-        <section class="tab-panel" id="sharing">
-          <div class="top-actions">
-            <div class="left-actions"></div>
-            <div class="right-actions">
-              <button class="primary">New Share Rule</button>
-            </div>
-          </div>
+        <section class="section">
+          <h2>B. Module Access Matrix (RBAC)</h2>
+          <p class="note">Set static permissions for modules/resources.</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Module</th>
+                <th>Access</th>
+                <th>View</th>
+                <th>Edit</th>
+                <th>Delete</th>
+                <th>More</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Customer OTP Entry</td>
+                <td><input type="checkbox" checked /></td>
+                <td><input type="checkbox" checked /></td>
+                <td><input type="checkbox" /></td>
+                <td><input type="checkbox" /></td>
+                <td><input type="checkbox" /></td>
+              </tr>
+              <tr>
+                <td>Customer Personal Details</td>
+                <td><input type="checkbox" checked /></td>
+                <td><input type="checkbox" checked /></td>
+                <td><input type="checkbox" /></td>
+                <td><input type="checkbox" /></td>
+                <td><input type="checkbox" /></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
 
-          <div class="block">
-            <h3>Data Sharing Rules</h3>
-            <p class="block-note">Use this tab as ABAC policy registry (resource sharing + contextual constraints).</p>
-            <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Form</th>
-                  <th>Shared From</th>
-                  <th>Shared To</th>
-                  <th>Level of access</th>
-                  <th>ABAC Condition</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Data share</td>
-                  <td>Customer OTP Entry</td>
-                  <td>R:CEO</td>
-                  <td>R:Manager</td>
-                  <td>Read Only</td>
-                  <td>record.region = user.region</td>
-                </tr>
-                <tr>
-                  <td>Refund approval policy</td>
-                  <td>Refund Requests</td>
-                  <td>R:Sales Rep</td>
-                  <td>R:Manager</td>
-                  <td>Escalate</td>
-                  <td>refund_amount > 5000 and customer_tier != premium</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+        <section class="section">
+          <h2>C. Role Mapping (RBAC)</h2>
+          <p class="note">Attach the permission profile to one or more roles.</p>
+          <div class="grid two">
+            <div>
+              <label for="roleSelect">Assign To Role</label>
+              <select id="roleSelect">
+                <option>Sales Rep</option>
+                <option>Manager</option>
+                <option>CEO</option>
+                <option>Support Executive</option>
+              </select>
 
-          <div class="block" style="margin-top: 12px;">
-            <h3>Visual ABAC Rule Builder</h3>
-            <p class="block-note">Reusable condition blocks with optional natural language mirror for non-technical admins.</p>
-            <div class="condition-row">
-              <div class="condition-grid">
-                <select>
-                  <option>refund_amount</option>
-                  <option>customer_tier</option>
-                  <option>region</option>
-                </select>
-                <select>
-                  <option>&gt;</option>
-                  <option>=</option>
-                  <option>!=</option>
-                </select>
-                <input value="5000" />
-              </div>
-              <div class="condition-grid">
-                <select>
-                  <option>customer_tier</option>
-                  <option>record_owner_id</option>
-                </select>
-                <select>
-                  <option>!=</option>
-                  <option>=</option>
-                </select>
-                <input value="premium" />
+              <label for="scopeSelect" style="margin-top: 8px;">Role Scope</label>
+              <select id="scopeSelect">
+                <option>Own Records</option>
+                <option>Team Records</option>
+                <option>All Records</option>
+              </select>
+
+              <div class="actions">
+                <button class="primary">Attach Role</button>
+                <button>Remove Role Link</button>
               </div>
             </div>
-            <p class="block-note"><strong>Natural language:</strong> Require manager approval if refund amount exceeds 5000 and customer tier is not premium.</p>
+
+            <div>
+              <label>Current Role Assignments</label>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Role</th>
+                    <th>Permission</th>
+                    <th>Scope</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Sales Rep</td>
+                    <td>Read - Customer OTP Entry</td>
+                    <td>Own Records</td>
+                  </tr>
+                  <tr>
+                    <td>Manager</td>
+                    <td>Read - Customer OTP Entry</td>
+                    <td>Team Records</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </section>
 
-        <section class="tab-panel" id="simulator">
-          <div class="row two">
-            <div class="block">
-              <h3>Policy Simulator</h3>
-              <p class="block-note">Single-click validation before deployment. Show RBAC decision first, ABAC checks second.</p>
+        <section class="section">
+          <h2>D. Conditional Access (ABAC)</h2>
+          <p class="note">Add dynamic constraints that are evaluated after RBAC checks.</p>
+          <label style="display: inline-flex; gap: 8px; align-items: center; margin-bottom: 10px;">
+            <input type="checkbox" id="abacToggle" checked style="width: auto;" />
+            Enable ABAC conditions for this permission
+          </label>
+
+          <div id="abacBlock">
+            <div id="conditionList">
+              <div class="condition-row">
+                <div class="condition-grid">
+                  <select>
+                    <option>record_owner_id</option>
+                    <option>refund_amount</option>
+                    <option>customer_tier</option>
+                    <option>region</option>
+                  </select>
+                  <select>
+                    <option>=</option>
+                    <option>!=</option>
+                    <option>&gt;</option>
+                    <option>&lt;</option>
+                  </select>
+                  <input value="current_user_id" />
+                </div>
+              </div>
+              <div class="condition-row">
+                <div class="condition-grid">
+                  <select>
+                    <option>refund_amount</option>
+                    <option>customer_tier</option>
+                    <option>region</option>
+                  </select>
+                  <select>
+                    <option>&gt;</option>
+                    <option>=</option>
+                    <option>!=</option>
+                  </select>
+                  <input value="5000" />
+                </div>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button id="addCondition">+ Add Condition</button>
+              <button>Clear Conditions</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>E. Access Validation</h2>
+          <p class="note">Test the combined RBAC + ABAC policy before saving.</p>
+          <div class="grid two">
+            <div>
               <label for="simRole">Role</label>
               <select id="simRole">
                 <option>Sales Rep</option>
@@ -841,20 +626,18 @@
                 <option>standard</option>
               </select>
 
-              <div style="margin-top: 10px;">
-                <button class="primary" id="runSimulation">Run Simulation</button>
+              <div class="actions">
+                <button class="primary" id="runSimulation">Run Validation</button>
               </div>
             </div>
 
-            <div class="block">
-              <h3>Decision Trace</h3>
-              <p class="block-note">Explainability output to build trust and speed up audits.</p>
+            <div>
               <div class="decision denied" id="decisionCard">
                 <div class="status denied" id="decisionStatus">Denied</div>
                 <div id="decisionReason">Denied because Sales Rep can view only own records.</div>
                 <ol class="trace" id="decisionTrace">
                   <li>RBAC check: Sales Rep + View Record = allowed with scope Own.</li>
-                  <li>Ownership check failed: selected Other User Record.</li>
+                  <li>ABAC check failed: record_owner_id does not match current_user_id.</li>
                   <li>Final decision: Denied.</li>
                 </ol>
               </div>
@@ -862,98 +645,65 @@
           </div>
         </section>
 
-        <section class="tab-panel" id="insights">
-          <div class="row three">
+        <section class="section">
+          <h2>F. Save and Monitor</h2>
+          <p class="note">Finalize one policy object and monitor key outcomes.</p>
+          <div class="grid three">
             <div class="metric">
-              <div class="name">Total Roles</div>
-              <div class="value">8</div>
+              <div class="name">Total Roles Linked</div>
+              <div class="value">2</div>
             </div>
             <div class="metric">
-              <div class="name">Active Users</div>
-              <div class="value">241</div>
+              <div class="name">ABAC Conditions</div>
+              <div class="value">2</div>
             </div>
             <div class="metric">
-              <div class="name">Risk Alerts</div>
-              <div class="value">3</div>
+              <div class="name">Last Validation Result</div>
+              <div class="value" id="lastResult">Denied</div>
             </div>
           </div>
-
-          <div class="alert">
-            <strong>High severity:</strong> User John accessed 500 records in 2 minutes (normal baseline: ~20/day).
-            <div style="margin-top: 8px; display: flex; gap: 8px;">
-              <button class="ghost">Restrict Access</button>
-              <button>Investigate</button>
-            </div>
-          </div>
-
-          <div class="alert">
-            <strong>Recommendation:</strong> Managers have unused write permissions on two modules. Consider reducing scope to read + approve only.
-            <div style="margin-top: 8px;">
-              <button class="ghost">Apply Suggested Tightening</button>
-            </div>
+          <div class="actions">
+            <button class="primary">Save Permission Policy</button>
+            <button class="ghost">Publish Changes</button>
+            <button>Export Audit Log</button>
           </div>
         </section>
 
-        <section class="blueprint">
-          <h3>Clean RBAC + ABAC incorporation blueprint (mapped to your current UI)</h3>
-          <ul>
-            <li><strong>Permissions tab:</strong> keep module matrix as RBAC baseline; add ABAC condition block under each permission profile.</li>
-            <li><strong>Roles tab:</strong> keep hierarchy tree; attach permission profiles + optional ABAC guardrails at role level.</li>
-            <li><strong>Data Sharing tab:</strong> convert into ABAC policy registry (resource, shared-from/to, condition, effect).</li>
-            <li><strong>Policy Simulator tab:</strong> run "who can do what on which record" tests before publish, with decision trace.</li>
-            <li><strong>Security Insights:</strong> monitor anomalies and auto-suggest least-privilege cleanups.</li>
-            <li><strong>AI behavior:</strong> AI suggests rules and explanations, but admin review/approve remains mandatory.</li>
-          </ul>
-        </section>
+        <div class="tip">
+          <strong>Clear usage model:</strong> Admin enters through one Permission Center screen, defines base RBAC access,
+          maps roles, adds ABAC constraints, validates result, then saves. No separate AI layer and no multi-tab hopping.
+        </div>
       </section>
     </main>
   </div>
 
   <script>
-    const tabButtons = document.querySelectorAll(".tab-btn");
-    const tabPanels = document.querySelectorAll(".tab-panel");
-
-    function openTab(tabId) {
-      tabButtons.forEach((btn) => btn.classList.toggle("active", btn.dataset.tab === tabId));
-      tabPanels.forEach((panel) => panel.classList.toggle("active", panel.id === tabId));
-    }
-
-    tabButtons.forEach((btn) => {
-      btn.addEventListener("click", () => openTab(btn.dataset.tab));
-    });
-
-    const generateSuggestion = document.getElementById("generateSuggestion");
-    const permName = document.getElementById("permName");
-    const permDesc = document.getElementById("permDesc");
-    generateSuggestion.addEventListener("click", () => {
-      permName.value = "Sales Rep Scoped Read";
-      permDesc.value = "Read-only access limited to own records with ABAC ownership check.";
-      openTab("permissions");
-    });
-
     const abacToggle = document.getElementById("abacToggle");
-    const abacBuilder = document.getElementById("abacBuilder");
+    const abacBlock = document.getElementById("abacBlock");
+    const addCondition = document.getElementById("addCondition");
+
     abacToggle.addEventListener("change", () => {
-      abacBuilder.style.display = abacToggle.checked ? "block" : "none";
+      abacBlock.style.display = abacToggle.checked ? "block" : "none";
     });
 
-    document.getElementById("addCondition").addEventListener("click", () => {
+    addCondition.addEventListener("click", () => {
       const list = document.getElementById("conditionList");
       const row = document.createElement("div");
       row.className = "condition-row";
       row.innerHTML = `
         <div class="condition-grid">
           <select>
-            <option>refund_amount</option>
-            <option>customer_tier</option>
             <option>region</option>
+            <option>record_owner_id</option>
+            <option>customer_tier</option>
           </select>
           <select>
-            <option>&gt;</option>
             <option>=</option>
             <option>!=</option>
+            <option>&gt;</option>
+            <option>&lt;</option>
           </select>
-          <input value="5000" />
+          <input value="user.region" />
         </div>
       `;
       list.appendChild(row);
@@ -970,31 +720,32 @@
       const status = document.getElementById("decisionStatus");
       const reason = document.getElementById("decisionReason");
       const trace = document.getElementById("decisionTrace");
+      const lastResult = document.getElementById("lastResult");
 
       let allowed = true;
       const steps = [];
 
       if (action === "View Record" && role === "Sales Rep") {
-        steps.push("RBAC check: Sales Rep can View Record with scope Own.");
+        steps.push("RBAC check passed: Sales Rep can view own records.");
         if (ownership === "Other User Record") {
           allowed = false;
-          steps.push("Ownership ABAC check failed: record_owner_id != current_user_id.");
+          steps.push("ABAC check failed: record ownership does not match current user.");
         } else {
-          steps.push("Ownership ABAC check passed.");
+          steps.push("ABAC check passed: record ownership matches current user.");
         }
       }
 
       if (action === "Approve Discount") {
-        if (role === "Sales Rep") {
+        if (role !== "Manager" && role !== "CEO") {
           allowed = false;
-          steps.push("RBAC check failed: Sales Rep has no Approve Discount permission.");
+          steps.push("RBAC check failed: only Manager/CEO can approve discounts.");
         } else {
-          steps.push("RBAC check passed: role can Approve Discount.");
-          if (amount > 5000 && tier !== "premium" && role !== "Manager" && role !== "CEO") {
+          steps.push("RBAC check passed: role can approve discounts.");
+          if (amount > 5000 && tier === "standard" && role !== "Manager" && role !== "CEO") {
             allowed = false;
-            steps.push("ABAC check failed: only Manager/CEO can approve non-premium refunds > 5000.");
+            steps.push("ABAC threshold check failed.");
           } else {
-            steps.push("ABAC threshold checks passed.");
+            steps.push("ABAC threshold check passed.");
           }
         }
       }
@@ -1005,14 +756,16 @@
         status.classList.remove("denied");
         status.classList.add("allowed");
         status.textContent = "Allowed";
-        reason.textContent = "Request satisfies RBAC permissions and ABAC conditions.";
+        reason.textContent = "Request satisfies both RBAC role permissions and ABAC conditions.";
+        lastResult.textContent = "Allowed";
       } else {
         card.classList.remove("allowed");
         card.classList.add("denied");
         status.classList.remove("allowed");
         status.classList.add("denied");
         status.textContent = "Denied";
-        reason.textContent = "Request blocked by RBAC scope or ABAC condition checks.";
+        reason.textContent = "Request blocked by RBAC scope or ABAC condition check.";
+        lastResult.textContent = "Denied";
       }
 
       steps.push(`Final decision: ${allowed ? "Allowed" : "Denied"}.`);
