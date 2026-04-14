@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Permission Builder - Unified RBAC UX</title>
+  <style>
+    :root {
+      --bg: #f5f6fb;
+      --surface: #ffffff;
+      --line: #dde2f0;
+      --text: #1f2937;
+      --muted: #637186;
+      --primary: #2f56ee;
+      --primary-soft: #edf2ff;
+      --success: #15803d;
+      --topbar: #252a57;
+      --radius: 10px;
+      --shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    .topbar {
+      height: 54px;
+      background: var(--topbar);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .topbar .left,
+    .topbar .right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.85rem;
+    }
+
+    .app-chip {
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .shell {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      min-height: calc(100vh - 54px);
+    }
+
+    .sidebar {
+      border-right: 1px solid var(--line);
+      background: #f1f3fb;
+      padding: 14px 12px;
+    }
+
+    .side-group { margin-bottom: 18px; }
+
+    .side-label {
+      color: #67758d;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .side-item {
+      font-size: 0.88rem;
+      color: #324155;
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-bottom: 4px;
+    }
+
+    .side-item.active {
+      background: #e8eeff;
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .content {
+      padding: 18px;
+      overflow: auto;
+    }
+
+    .page-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+
+    .subtitle {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      max-width: 940px;
+    }
+
+    .flow {
+      margin-top: 14px;
+      border: 1px dashed #cad5fb;
+      background: #f8faff;
+      border-radius: 8px;
+      padding: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      font-size: 0.84rem;
+    }
+
+    .step {
+      border: 1px solid #d6dffc;
+      background: #fff;
+      color: #2f56ee;
+      border-radius: 999px;
+      padding: 4px 9px;
+      font-weight: 600;
+    }
+
+    .section {
+      margin-top: 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      padding: 12px;
+    }
+
+    .section h2 {
+      margin: 0;
+      font-size: 0.98rem;
+    }
+
+    .note {
+      margin: 4px 0 10px;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .grid.two { grid-template-columns: 1.15fr 1fr; }
+    .grid.three { grid-template-columns: repeat(3, minmax(160px, 1fr)); }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: #46566d;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font: inherit;
+      background: #fff;
+      color: var(--text);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 78px;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      border-radius: 8px;
+      padding: 8px 11px;
+      font-size: 0.84rem;
+      cursor: pointer;
+    }
+
+    .primary {
+      background: var(--primary);
+      border-color: #274bd3;
+      color: #fff;
+    }
+
+    .ghost {
+      background: var(--primary-soft);
+      border-color: #c9d5ff;
+      color: #264bcd;
+    }
+
+    .actions {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .preset-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .preset-btn.active {
+      border-color: #c7d4ff;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      background: #fff;
+    }
+
+    .card h3 {
+      margin: 0;
+      font-size: 0.92rem;
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    .tiny {
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    .check-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(220px, 1fr));
+      gap: 6px 12px;
+    }
+
+    .check-item {
+      border: 1px solid #e8ebf4;
+      border-radius: 8px;
+      padding: 7px 8px;
+      font-size: 0.83rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #fcfdff;
+    }
+
+    .check-item.hide {
+      display: none;
+    }
+
+    .search-wrap {
+      display: grid;
+      grid-template-columns: 1fr 220px;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(120px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .metric {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      background: #fff;
+    }
+
+    .metric .name {
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    .metric .value {
+      margin-top: 5px;
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .review {
+      border: 1px dashed #c9d5ff;
+      border-radius: 10px;
+      background: #f8faff;
+      padding: 10px;
+      margin-top: 12px;
+      font-size: 0.84rem;
+      color: #334155;
+    }
+
+    .chip {
+      display: inline-block;
+      border: 1px solid #d2dcff;
+      background: #eef2ff;
+      color: #2f4ec4;
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 0.75rem;
+      margin-right: 6px;
+      margin-bottom: 4px;
+    }
+
+    @media (max-width: 1180px) {
+      .shell { grid-template-columns: 1fr; }
+      .sidebar { border-right: 0; border-bottom: 1px solid var(--line); }
+      .grid.two, .grid.three, .summary, .search-wrap { grid-template-columns: 1fr; }
+      .check-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="left">
+      <span>☰</span>
+      <span class="app-chip">Order Management</span>
+      <span>Settings</span>
+    </div>
+    <div class="right">
+      <span>Design</span>
+      <span>Workflow</span>
+      <strong>Settings</strong>
+      <button class="primary" style="padding: 6px 10px;">Access Development Live</button>
+    </div>
+  </header>
+
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="side-group">
+        <div class="side-label">Permissions</div>
+        <div class="side-item active">User Permissions</div>
+        <div class="side-item">Portal User Permissions</div>
+      </div>
+      <div class="side-group">
+        <div class="side-label">Personalization</div>
+        <div class="side-item">Localization</div>
+        <div class="side-item">Contextual Messages</div>
+        <div class="side-item">Record Templates</div>
+      </div>
+      <div class="side-group">
+        <div class="side-label">Developer Tools</div>
+        <div class="side-item">Schema Builder</div>
+        <div class="side-item">Application IDE</div>
+        <div class="side-item">Widgets</div>
+        <div class="side-item">Variables</div>
+        <div class="side-item">Helpers</div>
+      </div>
+    </aside>
+
+    <main class="content">
+      <section class="page-card">
+        <h1>Unified Permission Builder (Single Entry Point)</h1>
+        <p class="subtitle">
+          Easier alternative to a giant checkbox matrix: start from one permission profile, apply role preset,
+          then adjust grouped actions (Form, Report, Page, Blueprint, Approval) with search and bulk controls.
+          All actions from your reference list are covered here.
+        </p>
+
+        <div class="flow">
+          <span class="step">1) Create Permission</span>
+          <span>→</span>
+          <span class="step">2) Apply Role Preset</span>
+          <span>→</span>
+          <span class="step">3) Fine-tune by Component</span>
+          <span>→</span>
+          <span class="step">4) Review Coverage</span>
+          <span>→</span>
+          <span class="step">5) Save & Publish</span>
+        </div>
+
+        <section class="section">
+          <h2>A. Permission Profile</h2>
+          <p class="note">One policy object. Keep this as the only admin entry point.</p>
+          <div class="grid two">
+            <div>
+              <label for="permissionName">Permission Name</label>
+              <input id="permissionName" value="Operations Manager - Controlled Access" />
+            </div>
+            <div>
+              <label for="roleTarget">Primary Role</label>
+              <select id="roleTarget">
+                <option>Manager</option>
+                <option>Sales Rep</option>
+                <option>Support Executive</option>
+                <option>CEO</option>
+              </select>
+            </div>
+          </div>
+          <div style="margin-top: 8px;">
+            <label for="permissionDescription">Description</label>
+            <textarea id="permissionDescription">Unified role policy covering form, report, page, blueprint, and approval controls.</textarea>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>B. Role Presets (for fast setup)</h2>
+          <p class="note">
+            Presets reduce manual work. After applying, admins can still override any individual action below.
+          </p>
+          <div class="preset-row">
+            <button class="preset-btn active" data-preset="read">Read Only</button>
+            <button class="preset-btn" data-preset="entry">Data Entry</button>
+            <button class="preset-btn" data-preset="ops">Operations Manager</button>
+            <button class="preset-btn" data-preset="admin">Admin</button>
+          </div>
+          <div class="actions">
+            <button class="ghost" id="applyPreset">Apply Selected Preset</button>
+            <button id="clearAll">Clear All Permissions</button>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>C. Action Coverage (all components)</h2>
+          <p class="note">
+            Every action from your list is included. Use component-level "Select All / Clear" instead of a giant flat matrix.
+          </p>
+
+          <div class="search-wrap">
+            <input id="searchAction" placeholder="Search actions (example: export, approval, mobile number, pivot)" />
+            <select id="componentFilter">
+              <option value="all">All Components</option>
+              <option value="form">Form</option>
+              <option value="report">Report</option>
+              <option value="page">Page</option>
+              <option value="blueprint">Blueprint</option>
+              <option value="approval">Approval</option>
+            </select>
+          </div>
+
+          <div class="grid">
+            <div class="card component-card" data-component="form">
+              <div class="card-top">
+                <h3>Form Actions</h3>
+                <div>
+                  <button class="ghost component-select" data-target="form">Select All</button>
+                  <button class="component-clear" data-target="form">Clear</button>
+                </div>
+              </div>
+              <div class="tiny">Includes core form operations, inline subform/lookup, draft, and field-level CRUD.</div>
+              <div class="check-grid">
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="form" data-level="2" id="form-add-record"> Add record</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="form" data-level="1" id="form-inline-view"> Inline Subform / Lookup form - View form</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="form" data-level="2" id="form-inline-add"> Inline Subform / Lookup form - Add record</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="form" data-level="3" id="form-inline-remove"> Inline Subform / Lookup form - Remove record</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="form" data-level="2" id="form-save-draft"> Save as draft</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="form" data-level="2" id="form-field-create"> Field level (CRUD) - Create</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="form" data-level="1" id="form-field-read"> Field level (CRUD) - Read</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="form" data-level="3" id="form-field-update"> Field level (CRUD) - Update</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="form" data-level="4" id="form-field-delete"> Field level (CRUD) - Delete</label>
+              </div>
+            </div>
+
+            <div class="card component-card" data-component="report">
+              <div class="card-top">
+                <h3>Report Actions</h3>
+                <div>
+                  <button class="ghost component-select" data-target="report">Select All</button>
+                  <button class="component-clear" data-target="report">Clear</button>
+                </div>
+              </div>
+              <div class="tiny">Covers record lifecycle, export/print/import, comments, attachment, analytics, bulk, and data controls.</div>
+              <div class="check-grid">
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="report" data-level="4" id="report-delete-record"> Delete record</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="report" data-level="3" id="report-edit-record"> Edit record</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="report" data-level="1" id="report-view-record"> View record</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="report" data-level="2" id="report-duplicate-record"> Duplicate record</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="report" data-level="2" id="report-print-record"> Print record</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="report" data-level="2" id="report-export-record"> Export record</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="report" data-level="3" id="report-import-record"> Import record</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="report" data-level="2" id="report-add-comment"> Add comment</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="report" data-level="3" id="report-delete-comment"> Delete comment</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="report" data-level="1" id="report-view-attachment"> View attachment</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="report" data-level="2" id="report-download-attachment"> Download attachment</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="report" data-level="3" id="report-click-custom-button"> Click custom button</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="report" data-level="2" id="report-save-record"> Save record</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="report" data-level="3" id="report-update-view"> Update view</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="report" data-level="1" id="report-filters"> Filters</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="report" data-level="1" id="report-groups"> Groups</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="report" data-level="1" id="report-sorting"> Sorting</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="report" data-level="3" id="report-pivot-regeneration"> Pivot reports regeneration</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="report" data-level="2" id="report-export-pivot"> Export in pivot reports</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="report" data-level="4" id="report-bulk-delete"> Bulk delete</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="report" data-level="3" id="report-bulk-edit"> Bulk edit</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="report" data-level="3" id="report-bulk-duplicate"> Bulk duplicate</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="report" data-level="2" id="report-advanced-search-lookup"> Advanced search lookup</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="report" data-level="4" id="report-data-privacy-pii"> Data privacy - PII</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="report" data-level="4" id="report-data-security-ephi"> Data security - ePHI</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="report" data-level="4" id="report-data-visibility-admin-only"> Data visibility - all / admin only</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="report" data-level="2" id="report-field-description"> Description of the field</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="report" data-level="3" id="report-country-code-mobile"> Country code visibility for mobile number</label>
+              </div>
+            </div>
+
+            <div class="card component-card" data-component="page">
+              <div class="card-top">
+                <h3>Page Actions</h3>
+                <div>
+                  <button class="ghost component-select" data-target="page">Select All</button>
+                  <button class="component-clear" data-target="page">Clear</button>
+                </div>
+              </div>
+              <div class="tiny">Separate view permissions from edit permissions for embedded components.</div>
+              <div class="check-grid">
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="page" data-level="1" id="page-view-page"> View page</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="page" data-level="2" id="page-show-components-view-only"> Show form/report/field in page (view only)</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="page" data-level="3" id="page-button-component-control"> Page button and component permission control</label>
+              </div>
+            </div>
+
+            <div class="card component-card" data-component="blueprint">
+              <div class="card-top">
+                <h3>Blueprint Actions</h3>
+                <div>
+                  <button class="ghost component-select" data-target="blueprint">Select All</button>
+                  <button class="component-clear" data-target="blueprint">Clear</button>
+                </div>
+              </div>
+              <div class="check-grid">
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="blueprint" data-level="3" id="blueprint-transition-done"> Transition done</label>
+              </div>
+            </div>
+
+            <div class="card component-card" data-component="approval">
+              <div class="card-top">
+                <h3>Approval Actions</h3>
+                <div>
+                  <button class="ghost component-select" data-target="approval">Select All</button>
+                  <button class="component-clear" data-target="approval">Clear</button>
+                </div>
+              </div>
+              <div class="check-grid">
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="approval" data-level="1" id="approval-view"> View</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="approval" data-level="2" id="approval-accept"> Accept</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="approval" data-level="2" id="approval-reject"> Reject</label>
+                <label class="check-item"><input type="checkbox" class="perm-check" data-component="approval" data-level="3" id="approval-recall"> Recall</label>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>D. Coverage and Review</h2>
+          <p class="note">Quickly confirm nothing is missed while still giving admins a simple flow.</p>
+          <div class="summary">
+            <div class="metric">
+              <div class="name">Total Actions</div>
+              <div class="value" id="totalActions">46</div>
+            </div>
+            <div class="metric">
+              <div class="name">Selected</div>
+              <div class="value" id="selectedActions">0</div>
+            </div>
+            <div class="metric">
+              <div class="name">Form Selected</div>
+              <div class="value" id="formCount">0</div>
+            </div>
+            <div class="metric">
+              <div class="name">Report Selected</div>
+              <div class="value" id="reportCount">0</div>
+            </div>
+            <div class="metric">
+              <div class="name">Other Selected</div>
+              <div class="value" id="otherCount">0</div>
+            </div>
+          </div>
+
+          <div class="review">
+            <strong>Recommended customer-friendly model:</strong><br />
+            1) Start with role preset, 2) adjust component groups, 3) search and tweak exceptions,
+            4) review counts, 5) save. This keeps full granularity without matrix fatigue.
+            <div style="margin-top: 8px;">
+              <span class="chip">Single Entry Point</span>
+              <span class="chip">All Actions Covered</span>
+              <span class="chip">Preset + Override</span>
+              <span class="chip">Searchable</span>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="primary">Save Permission Policy</button>
+            <button class="ghost">Publish</button>
+            <button>Export Audit View</button>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const checks = Array.from(document.querySelectorAll(".perm-check"));
+    const presetButtons = Array.from(document.querySelectorAll(".preset-btn"));
+    const applyPresetBtn = document.getElementById("applyPreset");
+    const clearAllBtn = document.getElementById("clearAll");
+    const searchInput = document.getElementById("searchAction");
+    const componentFilter = document.getElementById("componentFilter");
+    const componentCards = Array.from(document.querySelectorAll(".component-card"));
+
+    let selectedPreset = "read";
+
+    function setActivePreset(preset) {
+      selectedPreset = preset;
+      presetButtons.forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.preset === preset);
+      });
+    }
+
+    presetButtons.forEach((btn) => {
+      btn.addEventListener("click", () => setActivePreset(btn.dataset.preset));
+    });
+
+    function applyPreset() {
+      const levelMap = { read: 1, entry: 2, ops: 3, admin: 4 };
+      const maxLevel = levelMap[selectedPreset] || 1;
+      checks.forEach((check) => {
+        check.checked = Number(check.dataset.level) <= maxLevel;
+      });
+      updateSummary();
+    }
+
+    applyPresetBtn.addEventListener("click", applyPreset);
+
+    clearAllBtn.addEventListener("click", () => {
+      checks.forEach((check) => {
+        check.checked = false;
+      });
+      updateSummary();
+    });
+
+    document.querySelectorAll(".component-select").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const target = btn.dataset.target;
+        checks.forEach((check) => {
+          if (check.dataset.component === target) {
+            check.checked = true;
+          }
+        });
+        updateSummary();
+      });
+    });
+
+    document.querySelectorAll(".component-clear").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const target = btn.dataset.target;
+        checks.forEach((check) => {
+          if (check.dataset.component === target) {
+            check.checked = false;
+          }
+        });
+        updateSummary();
+      });
+    });
+
+    checks.forEach((check) => {
+      check.addEventListener("change", updateSummary);
+    });
+
+    function updateSummary() {
+      const total = checks.length;
+      const selected = checks.filter((check) => check.checked).length;
+      const formSelected = checks.filter((check) => check.checked && check.dataset.component === "form").length;
+      const reportSelected = checks.filter((check) => check.checked && check.dataset.component === "report").length;
+      const otherSelected = selected - formSelected - reportSelected;
+
+      document.getElementById("totalActions").textContent = String(total);
+      document.getElementById("selectedActions").textContent = String(selected);
+      document.getElementById("formCount").textContent = String(formSelected);
+      document.getElementById("reportCount").textContent = String(reportSelected);
+      document.getElementById("otherCount").textContent = String(otherSelected);
+    }
+
+    function applySearchFilter() {
+      const query = searchInput.value.trim().toLowerCase();
+      const filter = componentFilter.value;
+
+      componentCards.forEach((card) => {
+        const cardComponent = card.dataset.component;
+        const componentMatch = filter === "all" || filter === cardComponent;
+
+        const items = Array.from(card.querySelectorAll(".check-item"));
+        let visibleCount = 0;
+
+        items.forEach((item) => {
+          const text = item.textContent.toLowerCase();
+          const textMatch = !query || text.includes(query);
+          const show = componentMatch && textMatch;
+          item.classList.toggle("hide", !show);
+          if (show) visibleCount += 1;
+        });
+
+        card.style.display = visibleCount > 0 ? "block" : "none";
+      });
+    }
+
+    searchInput.addEventListener("input", applySearchFilter);
+    componentFilter.addEventListener("change", applySearchFilter);
+
+    setActivePreset("read");
+    applyPreset();
+  </script>
+</body>
+</html>
